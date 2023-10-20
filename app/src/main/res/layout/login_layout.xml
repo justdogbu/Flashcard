@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <ImageButton
-        android:id="@+id/backBtn"
+        android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -35,7 +35,6 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/googleBtn"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginLeft="20dp"
@@ -44,7 +43,6 @@
             android:background="@drawable/ripple_transparent_border" />
 
         <ImageButton
-            android:id="@+id/facebookBtn"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginLeft="5dp"
@@ -58,48 +56,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:text="OR SIGN UP WITH AN EMAIL"
+        android:text="OR LOG IN WITH YOUR EMAIL"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/primary_text_color"
         android:textSize="14sp" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/edtDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="17dp"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:inputType="date"
-            android:hint="Nov 16, 2003"
-            android:fontFamily="@font/bevietnampro_semi_bold"
-            android:textColor="@color/primary_text_color"
-            android:textSize="12sp" />
-
-        <ImageButton
-            android:id="@+id/calendarBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_calendar_month_24"
-            android:background="@android:color/transparent"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="15dp"/>
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:text="DATE OF BIRTH"
-        android:fontFamily="@font/bevietnampro_semi_bold"
-        android:textColor="@color/primary_text_color"
-        android:textSize="14sp"/>
 
     <EditText
         android:id="@+id/edtEmail"
@@ -110,7 +72,7 @@
         android:layout_marginTop="15dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:hint="email@example.com"
+        android:hint="Enter your email or username"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
@@ -118,38 +80,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="EMAIL ADDRESS"
+        android:text="EMAIL OR USERNAME"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/primary_text_color"
         android:textSize="14sp"/>
-    <FrameLayout
+
+    <EditText
+        android:id="@+id/edtPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/edtPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="17dp"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:hint="******"
-            android:fontFamily="@font/bevietnampro_semi_bold"
-            android:textColor="@color/primary_text_color"
-            android:textSize="12sp"/>
-
-        <ImageButton
-            android:id="@+id/viewBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_remove_red_eye_24"
-            android:background="@android:color/transparent"
-            android:layout_gravity="right"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="15dp"/>
-    </FrameLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Enter your password"
+        android:fontFamily="@font/bevietnampro_semi_bold"
+        android:textColor="@color/primary_text_color"
+        android:textSize="12sp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -160,33 +108,58 @@
         android:textSize="14sp"/>
 
     <Button
-        android:id="@+id/signUpBtn"
+        android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="17dp"
         android:layout_marginRight="17dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/ripple_signup_btn"
-        android:text="Sign up"
+        android:background="@drawable/ripple_login_btn"
+        android:text="Log in"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/white"/>
-    
     <TextView
+        android:id="@+id/tvUserAndPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
-        android:text="By signing up, I accept Flashcard's"
+        android:text="Forgot username or password?"
         android:fontFamily="@font/bevietnampro_regular"
         android:textColor="@color/secondary_text_color"
         android:textSize="12sp"/>
-    <TextView
-        android:id="@+id/tvLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Terms of service and Privacy policy"
-        android:fontFamily="@font/bevietnampro_regular"
-        android:textColor="@color/secondary_text_color"
-        android:textSize="12sp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/tvLink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="@font/bevietnampro_regular"
+            android:text="By signing up, I accept Flashcard's"
+            android:textColor="@color/secondary_text_color"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tvLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="@font/bevietnampro_regular"
+            android:text="Terms of service and Privacy policy"
+            android:textColor="@color/secondary_text_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </LinearLayout>

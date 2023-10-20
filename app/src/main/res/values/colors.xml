@@ -10,6 +10,8 @@
     <color name="primary_button_color">#4255FF</color>
     <color name="secondary_button_color">#939BB4</color>
     <color name="primary_text_color">#313747</color>
-    <color name="secondary_text_color">#DBDFE9</color>
+    <color name="secondary_text_color">#586380</color>
     <color name="line_color">#2E3856</color>
+    <color name="link">#0000FF</color>
+    <color name="visted_link">#800080</color>
 </resources>

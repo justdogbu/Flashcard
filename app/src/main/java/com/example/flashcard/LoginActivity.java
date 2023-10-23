@@ -3,9 +3,12 @@ package com.example.flashcard;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
@@ -14,6 +17,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEdt, passEdt;
     private Button loginBtn;
+    private ImageButton backBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +26,14 @@ public class LoginActivity extends AppCompatActivity {
 
         emailEdt = findViewById(R.id.edtEmail);
         passEdt = findViewById(R.id.edtPassword);
+
+        backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         loginBtn = findViewById(R.id.loginBtn);
 

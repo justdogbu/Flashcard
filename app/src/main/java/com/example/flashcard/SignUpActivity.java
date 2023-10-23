@@ -3,7 +3,6 @@ package com.example.flashcard;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -19,7 +18,7 @@ import com.klinker.android.link_builder.LinkBuilder;
 import java.util.Calendar;
 
 
-public class MainActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private boolean isPasswordShow = false;
     private EditText emailEdt, passEdt, dateEdt;

@@ -14,4 +14,6 @@
     <color name="line_color">#2E3856</color>
     <color name="link">#0000FF</color>
     <color name="visted_link">#800080</color>
+    <color name="primary_indicator">#586380</color>
+    <color name="secondary_indicator">#DCDFE9</color>
 </resources>

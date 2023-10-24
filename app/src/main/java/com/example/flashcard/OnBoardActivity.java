@@ -28,7 +28,7 @@ public class OnBoardActivity extends AppCompatActivity {
     private List<SlideItem> sliderItem;
     private ViewPager2 viewPager2;
     private Handler slideHandler = new Handler();
-    private ImageView iv1, iv2, iv3, iv4;
+    private ImageView iv1, iv2, iv3, iv4, iv5;
     private Button signUpBtn, loginBtn;
 
     @Override
@@ -44,11 +44,14 @@ public class OnBoardActivity extends AppCompatActivity {
         sliderItem.add(new SlideItem(R.drawable.avt));
         sliderItem.add(new SlideItem(R.drawable.image2));
         sliderItem.add(new SlideItem(R.drawable.chemes));
+        sliderItem.add(new SlideItem(R.drawable.haha));
+        sliderItem.add(new SlideItem(R.drawable.dam));
 
         iv1 = findViewById(R.id.iv1);
         iv2 = findViewById(R.id.iv2);
         iv3 = findViewById(R.id.iv3);
         iv4 = findViewById(R.id.iv4);
+        iv5 = findViewById(R.id.iv5);
 
         viewPager2.setAdapter(new SlideAdapter(sliderItem, viewPager2));
 
@@ -130,30 +133,41 @@ public class OnBoardActivity extends AppCompatActivity {
     }
 
     private void ChangeIndicatorColor(){
-        switch (viewPager2.getCurrentItem() % 4){
+        switch (viewPager2.getCurrentItem() % 5){
             case 0:
                 iv1.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.primary_indicator));
                 iv2.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv3.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv4.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv5.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 break;
             case 1:
                 iv1.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv2.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.primary_indicator));
                 iv3.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv4.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv5.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 break;
             case 2:
                 iv1.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv2.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv3.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.primary_indicator));
                 iv4.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv5.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 break;
             case 3:
                 iv1.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv2.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv3.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
                 iv4.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.primary_indicator));
+                iv5.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                break;
+            case 4:
+                iv1.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv2.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv3.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv4.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.secondary_indicator));
+                iv5.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.primary_indicator));
                 break;
             default:
                 break;

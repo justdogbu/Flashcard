@@ -16,4 +16,6 @@
     <color name="visted_link">#800080</color>
     <color name="primary_indicator">#586380</color>
     <color name="secondary_indicator">#DCDFE9</color>
+    <color name="primary_vector_color">#313747</color>
+    <color name="clicked_item">#4255FF</color>
 </resources>

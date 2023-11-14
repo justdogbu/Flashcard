@@ -13,12 +13,11 @@
         android:theme="@style/Theme.Flashcard"
         tools:targetApi="31">
         <activity
-            android:name=".TestMenu"
+            android:name=".NavigationMenu"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

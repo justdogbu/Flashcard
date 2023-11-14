@@ -1,9 +1,8 @@
 package com.example.flashcard;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -13,7 +12,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-public class TestMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class NavigationMenu extends AppCompatActivity{
 
     FloatingActionButton fab;
     DrawerLayout  drawerLayout;
@@ -36,23 +34,45 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_menu);
+        setContentView(R.layout.menu_navigation);
 
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         fab = findViewById(R.id.fab);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
         BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
 
         setSupportActionBar(bottomAppBar);
-        setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch(item.getItemId()){
+                    case R.id.nav_home:
+                        replaceFragment(new HomeFragment());
+                        bottomNavigationView.setSelectedItemId(R.id.home);
+                        break;
+                    case R.id.nav_solutions:
+                        replaceFragment(new SolutionsFragment());
+                        bottomNavigationView.setSelectedItemId(R.id.solutions);
+                        break;
+                    case R.id.nav_library:
+                        replaceFragment(new LibraryFragment());
+                        bottomNavigationView.setSelectedItemId(R.id.library);
+                        break;
+                    case R.id.nav_profile:
+                        replaceFragment(new ProfileFragment());
+                        bottomNavigationView.setSelectedItemId(R.id.profile);
+                        break;
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
+
+                return true;
+            }
+        });
 
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new HomeFragment()).commit();
@@ -67,15 +87,19 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
             switch (item.getItemId()) {
                 case R.id.home:
                     replaceFragment(new HomeFragment());
+                    navigationView.setCheckedItem(R.id.nav_home);
                     break;
                 case R.id.solutions:
                     replaceFragment(new SolutionsFragment());
+                    navigationView.setCheckedItem(R.id.nav_solutions);
                     break;
                 case R.id.library:
                     replaceFragment(new LibraryFragment());
+                    navigationView.setCheckedItem(R.id.nav_library);
                     break;
                 case R.id.profile:
                     replaceFragment(new ProfileFragment());
+                    navigationView.setCheckedItem(R.id.nav_profile);
                     break;
             }
 
@@ -88,6 +112,7 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
                 showBottomDialog();
             }
         });
+
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -112,7 +137,7 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Toast.makeText(TestMenu.this,"Create a topic is clicked",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NavigationMenu.this,"Create a topic is clicked",Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -122,7 +147,7 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Toast.makeText(TestMenu.this,"Create a folder is Clicked",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NavigationMenu.this,"Create a folder is Clicked",Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -132,7 +157,7 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
             public void onClick(View v) {
 
                 dialog.dismiss();
-                Toast.makeText(TestMenu.this,"Create a class is Clicked",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NavigationMenu.this,"Create a class is Clicked",Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -152,25 +177,4 @@ public class TestMenu extends AppCompatActivity implements NavigationView.OnNavi
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.nav_home:
-                replaceFragment(new HomeFragment());
-                Log.e("ERROR", "Nav home pressed");
-                break;
-            case R.id.nav_solutions:
-                replaceFragment(new SolutionsFragment());
-                Log.e("ERROR", "Nav solutions pressed");
-                break;
-            case R.id.nav_library:
-                replaceFragment(new LibraryFragment());
-                break;
-            case R.id.nav_profile:
-                replaceFragment(new ProfileFragment());
-                break;
-        }
-
-        return true;
-    }
 }

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OnBoardActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/primary_color">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,7 +15,7 @@
         android:layout_marginLeft="20dp"
         android:text="Flashcard"
         android:fontFamily="@font/bevietnampro_bold"
-        android:textColor="@color/primary_button_color"
+        android:textColor="@color/primary_text_color"
         android:textSize="24sp"/>
 
     <androidx.viewpager2.widget.ViewPager2
@@ -122,7 +123,7 @@
         android:layout_gravity="center"
         android:text="By signing up, I accept Flashcard's"
         android:fontFamily="@font/bevietnampro_regular"
-        android:textColor="@color/secondary_text_color"
+        android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
     <TextView
         android:id="@+id/tvLink"
@@ -131,7 +132,7 @@
         android:layout_gravity="center"
         android:text="Terms of service and Privacy policy"
         android:fontFamily="@font/bevietnampro_regular"
-        android:textColor="@color/secondary_text_color"
+        android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
 
     <Button
@@ -156,5 +157,5 @@
         android:text="OR LOG IN"
         android:background="@drawable/ripple_login_transparent_btn"
         android:fontFamily="@font/bevietnampro_semi_bold"
-        android:textColor="@color/primary_indicator"/>
+        android:textColor="@color/primary_text_color"/>
 </LinearLayout>

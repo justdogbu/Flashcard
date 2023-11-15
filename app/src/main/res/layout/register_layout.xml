@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:autofillHints="Oct 4, 2023"
     android:orientation="vertical"
-    tools:context=".SignUpActivity">
+    tools:context=".SignUpActivity"
+    android:background="@color/primary_color">
 
     <ImageButton
         android:id="@+id/backBtn"
@@ -26,7 +27,9 @@
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:text="QUICKLY LOG IN WITH"
         android:textColor="@color/primary_text_color"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textColorHint="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_text_color"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -79,7 +82,9 @@
             android:hint="Nov 16, 2003"
             android:fontFamily="@font/bevietnampro_semi_bold"
             android:textColor="@color/primary_text_color"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textColorHint="@color/secondary_text_color"
+            app:backgroundTint="@color/secondary_text_color"/>
 
         <ImageButton
             android:id="@+id/calendarBtn"
@@ -113,7 +118,9 @@
         android:hint="email@example.com"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/primary_text_color"
-        android:textSize="12sp"/>
+        android:textSize="12sp"
+        android:textColorHint="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_text_color"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -137,7 +144,9 @@
             android:hint="******"
             android:fontFamily="@font/bevietnampro_semi_bold"
             android:textColor="@color/primary_text_color"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textColorHint="@color/secondary_text_color"
+            app:backgroundTint="@color/secondary_text_color"/>
 
         <ImageButton
             android:id="@+id/viewBtn"
@@ -178,7 +187,7 @@
         android:layout_gravity="center"
         android:text="By signing up, I accept Flashcard's"
         android:fontFamily="@font/bevietnampro_regular"
-        android:textColor="@color/secondary_text_color"
+        android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
     <TextView
         android:id="@+id/tvLink"
@@ -187,6 +196,6 @@
         android:layout_gravity="center"
         android:text="Terms of service and Privacy policy"
         android:fontFamily="@font/bevietnampro_regular"
-        android:textColor="@color/secondary_text_color"
+        android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
 </LinearLayout>

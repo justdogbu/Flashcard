@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:autofillHints="Oct 4, 2023"
     android:orientation="vertical"
+    android:background="@color/primary_color"
+
     tools:context=".SignUpActivity">
 
     <ImageButton
@@ -73,6 +75,8 @@
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="Enter your email or username"
+        android:textColorHint="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_text_color"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
@@ -97,6 +101,8 @@
         android:hint="Enter your password"
         android:fontFamily="@font/bevietnampro_semi_bold"
         android:textColor="@color/primary_text_color"
+        android:textColorHint="@color/secondary_text_color"
+        app:backgroundTint="@color/secondary_text_color"
         android:textSize="12sp"/>
     <TextView
         android:layout_width="wrap_content"
@@ -126,7 +132,7 @@
         android:layout_gravity="center"
         android:text="Forgot username or password?"
         android:fontFamily="@font/bevietnampro_regular"
-        android:textColor="@color/secondary_text_color"
+        android:textColor="@color/primary_text_color"
         android:textSize="12sp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -143,7 +149,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:fontFamily="@font/bevietnampro_regular"
             android:text="By signing up, I accept Flashcard's"
-            android:textColor="@color/secondary_text_color"
+            android:textColor="@color/primary_text_color"
             android:textSize="12sp"/>
 
         <TextView
@@ -154,7 +160,7 @@
             android:layout_marginBottom="40dp"
             android:fontFamily="@font/bevietnampro_regular"
             android:text="Terms of service and Privacy policy"
-            android:textColor="@color/secondary_text_color"
+            android:textColor="@color/primary_text_color"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

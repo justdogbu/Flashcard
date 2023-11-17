@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/secondary_color"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextVocabulary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tertiary_text_color"
+        android:background="@drawable/custom_edit_text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/bevietnampro_semi_bold"
+        android:text="VOCABULARY"
+        android:textColor="@color/primary_text_color"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/editTextMeaning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/tertiary_text_color"
+        android:background="@drawable/custom_edit_text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/bevietnampro_semi_bold"
+        android:text="MEANING"
+        android:textColor="@color/primary_text_color"
+        android:textSize="12sp" />
+
+</LinearLayout>

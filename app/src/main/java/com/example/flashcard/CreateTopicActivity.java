@@ -6,13 +6,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.adservices.topics.Topic;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.flashcard.adapter.TopicAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CreateTopicActivity extends AppCompatActivity {
@@ -30,7 +30,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         ImageView menuItem1 = findViewById(R.id.topic_setting);
         ImageView menuItem2 = findViewById(R.id.topic_check);
 
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.vocabularyListView);
         fab = findViewById(R.id.fab);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -38,9 +38,8 @@ public class CreateTopicActivity extends AppCompatActivity {
 
         TopicAdapter adapter = new TopicAdapter();
         recyclerView.setAdapter(adapter);
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing); // Định nghĩa khoảng cách trong resources
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new ItemDecoration(this, spacingInPixels));
-
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

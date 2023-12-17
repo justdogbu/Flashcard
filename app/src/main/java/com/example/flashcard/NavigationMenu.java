@@ -55,9 +55,9 @@ public class NavigationMenu extends AppCompatActivity{
                         replaceFragment(new HomeFragment());
                         bottomNavigationView.setSelectedItemId(R.id.home);
                         break;
-                    case R.id.nav_solutions:
+                    case R.id.nav_search:
                         replaceFragment(new SolutionsFragment());
-                        bottomNavigationView.setSelectedItemId(R.id.solutions);
+                        bottomNavigationView.setSelectedItemId(R.id.search);
                         break;
                     case R.id.nav_library:
                         replaceFragment(new LibraryFragment());
@@ -89,9 +89,9 @@ public class NavigationMenu extends AppCompatActivity{
                     replaceFragment(new HomeFragment());
                     navigationView.setCheckedItem(R.id.nav_home);
                     break;
-                case R.id.solutions:
+                case R.id.search:
                     replaceFragment(new SolutionsFragment());
-                    navigationView.setCheckedItem(R.id.nav_solutions);
+                    navigationView.setCheckedItem(R.id.nav_search);
                     break;
                 case R.id.library:
                     replaceFragment(new LibraryFragment());

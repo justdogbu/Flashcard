@@ -63,7 +63,7 @@
 <!--            app:backgroundTint="@color/line_color"-->
 <!--            app:rippleColor="@color/primary_text_color"-->
 <!--            app:srcCompat="@drawable/ic_baseline_add_24"-->
-            />
+<!--            />-->
 
         <FrameLayout
             android:id="@+id/frame_layout"
@@ -71,7 +71,6 @@
             android:layout_height="match_parent"
             app:layout_anchor="@+id/linearLayout"
             app:layout_anchorGravity="center">
-
         </FrameLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

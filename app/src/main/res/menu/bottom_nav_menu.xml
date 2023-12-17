@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/home"
-        android:icon="@drawable/ic_baseline_search_24"
+        android:icon="@drawable/baseline_home_24"
         android:title="Home"
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/solutions"
-        android:icon="@drawable/ic_baseline_bookmarks_24"
-        android:title="Solutions"
+        android:id="@+id/search"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Search"
         app:showAsAction="always"/>
 
     <item android:title="" />
@@ -22,6 +22,7 @@
         android:title="Library"
         android:iconTint="@color/default_item"
         app:showAsAction="always"/>
+
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_baseline_person_outline_24"

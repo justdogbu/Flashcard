@@ -4,8 +4,8 @@
         <layer-list >
             <item
                 android:bottom="1dp"
-                android:left="-5dp"
-                android:right="-5dp"
+                android:left="-10dp"
+                android:right="-10dp"
                 android:top="-10dp">
                 <shape android:shape="rectangle" >
                     <stroke
@@ -27,8 +27,8 @@
         <layer-list >
             <item
                 android:bottom="1dp"
-                android:left="-5dp"
-                android:right="-5dp"
+                android:left="-10dp"
+                android:right="-10dp"
                 android:top="-10dp">
                 <shape android:shape="rectangle" >
                     <stroke
@@ -50,8 +50,8 @@
         <layer-list >
             <item
                 android:bottom="1dp"
-                android:left="-5dp"
-                android:right="-5dp"
+                android:left="-10dp"
+                android:right="-10dp"
                 android:top="-10dp">
                 <shape android:shape="rectangle" >
                     <stroke

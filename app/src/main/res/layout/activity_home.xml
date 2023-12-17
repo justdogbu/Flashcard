@@ -13,9 +13,10 @@
         android:layout_height="match_parent">
         <LinearLayout
             android:orientation="vertical"
-            android:id="@+id/tempContainer"
+            android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
         <com.google.android.material.bottomappbar.BottomAppBar
             android:layout_width="match_parent"
             android:layout_gravity="bottom"
@@ -38,9 +39,9 @@
                 android:background="@color/primary_color"
                 app:menu="@menu/bottom_nav_menu"
                 app:itemIconTint="@color/primary_text_color"
-                app:itemTextColor="@color/primary_text_color"
-                />
+                app:itemTextColor="@color/primary_text_color" />
         </com.google.android.material.bottomappbar.BottomAppBar>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             app:borderWidth="0dp"
@@ -53,6 +54,7 @@
             app:layout_anchor="@id/bottomAppBar"
             app:rippleColor="@color/primary_text_color"
             android:clickable="true"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView

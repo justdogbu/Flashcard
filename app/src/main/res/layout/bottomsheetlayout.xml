@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,94 +24,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
-            android:text="Create"
+            android:text="CREATE"
             android:padding="8dp"
-            android:textColor="@color/primary_text_color"
+            android:textColor="@color/primary_button_color"
             android:layout_marginStart="12dp"
             android:layout_marginTop="5dp"
-            android:textSize="25dp" />
+            android:textSize="25dp"
+            android:fontFamily="@font/bevietnampro_bold" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_clear_24"
-            android:layout_marginLeft="250dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="220dp"
+            android:layout_gravity="center"
             android:id="@+id/cancelButton"/>
 
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/layoutTopic"
-        android:orientation="horizontal"
+    <com.google.android.material.button.MaterialButton
+        app:backgroundTint="@null"
+        android:background="@android:color/transparent"
+        app:icon="@drawable/ic_baseline_book_open_24"
+        android:textColor="@color/white"
+        android:text="CREATE TOPIC"
+        android:id="@+id/addTopicBtn"
+        app:iconPadding="20dp"
+        app:iconTint="@color/white"
+        android:textAlignment="viewStart"
+        android:drawableStart="@drawable/ic_baseline_book_open_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:fontFamily="@font/bevietnampro_bold"
+        android:textSize="16sp"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_book_open_24"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create a topic"
-            android:textColor="@color/primary_text_color"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutFolder"
-        android:orientation="horizontal"
+    <com.google.android.material.button.MaterialButton
+        app:backgroundTint="@null"
+        android:background="@android:color/transparent"
+        app:icon="@drawable/ic_baseline_folder_24"
+        android:text="CREATE FOLDER"
+        android:id="@+id/addFolderBtn"
+        app:iconTint="@color/white"
+        android:textColor="@color/white"
+        android:textAlignment="viewStart"
+        android:drawableStart="@drawable/ic_baseline_folder_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_folder_24"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create a folder"
-            android:textColor="@color/primary_text_color"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutClass"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="30dp">
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_persons_outline_24"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create a class"
-            android:textColor="@color/primary_text_color"
-            android:layout_marginLeft="30dp"
-            android:textSize="16sp"/>
-
-    </LinearLayout>
+        android:padding="10dp"
+        app:iconPadding="20dp"
+        android:fontFamily="@font/bevietnampro_bold"
+        android:textSize="16sp" />
 
 </LinearLayout>

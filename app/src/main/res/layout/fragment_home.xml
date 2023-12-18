@@ -77,36 +77,22 @@
                 android:fontFamily="@font/bevietnampro_bold"
                 android:letterSpacing="0.05"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
-            <LinearLayout
+            <ImageButton
                 android:id="@+id/achievementBtn"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="40dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:orientation="vertical"
-                android:background="@drawable/achievement_bg">
-
-                <ImageView
-                    android:layout_width="128dp"
-                    android:layout_height="128dp"
-                    android:src="@drawable/achievement_icon"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"/>
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:text="SEE ALL ACHIEVEMENTS"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/bevietnampro_bold"
-                    android:textColor="@color/primary_text_color"/>
-            </LinearLayout>
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/achievement_bg"
+                android:src="@drawable/achievement_icon"
+                android:scaleType="fitCenter"
+                android:padding="30dp">
+            </ImageButton>
 
             <RelativeLayout
+                android:layout_marginTop="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -160,6 +146,7 @@
             </FrameLayout>
 
             <RelativeLayout
+                android:layout_margin="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

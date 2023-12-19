@@ -1,43 +1,66 @@
-package com.example.flashcard.adapter;
+package com.tdtu.finalproject.adapter;
 
-import android.util.Pair;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.EditText;
-import android.widget.ImageButton;
-
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.flashcard.model.topic.Topic;
+import com.example.flashcard.utils.CustomOnItemClickListener;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Picasso;
 import com.example.flashcard.R;
+import com.example.flashcard.model.topic.Topic;
+import com.example.flashcard.model.user.User;
+import com.example.flashcard.utils.CustomOnItemClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> {
+public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHolder> {
+    private Context mContext;
+    private List<Topic> topics;
+    private int layout;
+    private CustomOnItemClickListener customOnItemClickListener;
 
-    private List<Pair<String, String>> topics = new ArrayList<>();
+    public TopicAdapter(Context mContext, List<Topic> topics, int layout, CustomOnItemClickListener customOnItemClickListener) {
+        this.mContext = mContext;
+        this.topics = topics;
+        this.layout = layout;
+        this.customOnItemClickListener = customOnItemClickListener;
+    }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.topic_item, parent, false);
-        return new ViewHolder(view);
+    public List<Topic> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(List<Topic> topics) {
+        this.topics = topics;
+        notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pair<String, String> flashcard = topics.get(position);
-        holder.bind(flashcard);
+    public TopicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(layout, parent, false);
+        return new TopicViewHolder(view);
+    }
 
-        holder.removeVocabularyBtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onBindViewHolder(TopicViewHolder holder, int position) {
+        Topic topic = topics.get(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                topics.remove(flashcard);
-                notifyItemRemoved(holder.getAdapterPosition());
+                customOnItemClickListener.onTopicClick(topic);
             }
         });
+        holder.topicNameTxt.setText(topic.getTopicName());
+        holder.topicTermsCount.setText(topic.getVocabularyCount() + " Vocabulary");
+        holder.topicOwnerNameTxt.setText(topic.getOwnerId().getUsername());
+        holder.learnerCount.setText(topic.getUserId().size() + " Learner");
+        Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
     }
 
     @Override
@@ -45,26 +68,20 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         return topics.size();
     }
 
-    public void addFlashcard() {
-        topics.add(new Pair<>("", ""));
-        notifyDataSetChanged();
-    }
+    public class TopicViewHolder extends RecyclerView.ViewHolder {
+        TextView topicNameTxt;
+        TextView topicTermsCount;
+        ShapeableImageView topicOwnerImg;
+        TextView topicOwnerNameTxt;
+        TextView learnerCount;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private EditText editTextVocabulary;
-        private EditText editTextMeaning;
-        private ImageButton removeVocabularyBtn;
-
-        public ViewHolder(@NonNull View itemView) {
+        public TopicViewHolder(View itemView) {
             super(itemView);
-            editTextVocabulary = itemView.findViewById(R.id.editTextVocabulary);
-            editTextMeaning = itemView.findViewById(R.id.editTextMeaning);
-            removeVocabularyBtn = itemView.findViewById(R.id.removeVocabularyBtn);
-        }
-
-        public void bind(Pair<String, String> flashcard) {
-            editTextVocabulary.setText(flashcard.first);
-            editTextMeaning.setText(flashcard.second);
+            topicNameTxt = itemView.findViewById(R.id.topicItemNameTxt);
+            topicTermsCount = itemView.findViewById(R.id.termsCount);
+            topicOwnerImg = itemView.findViewById(R.id.topicOwnerImg);
+            topicOwnerNameTxt = itemView.findViewById(R.id.topicOwnerNameTxt);
+            learnerCount = itemView.findViewById(R.id.learnerCount);
         }
     }
 }

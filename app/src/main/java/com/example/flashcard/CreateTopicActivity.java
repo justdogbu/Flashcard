@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.flashcard.adapter.TopicAdapter;
+import com.example.flashcard.adapter.VocabularyAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CreateTopicActivity extends AppCompatActivity {
@@ -36,7 +36,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        TopicAdapter adapter = new TopicAdapter();
+        VocabularyAdapter adapter = new VocabularyAdapter();
         recyclerView.setAdapter(adapter);
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new ItemDecoration(this, spacingInPixels));

@@ -2,16 +2,32 @@ package com.example.flashcard;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.example.flashcard.model.Accounts;
+import com.example.flashcard.model.ApiClient;
+import com.example.flashcard.model.ApiHandler;
+import com.example.flashcard.model.ApiService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
+
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,6 +54,47 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.loginBtn);
 
         linkSetup();
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ApiService apiService = ApiClient.getClient().create(ApiService.class);
+                Call<Accounts> call = apiService.getAccount(emailEdt.getText().toString(), passEdt.getText().toString());
+                call.enqueue(new Callback<Accounts>() {
+                    @Override
+                    public void onResponse(Call<Accounts> call, Response<Accounts> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.d("API", "Raw JSON response: " + new Gson().toJson(response.body()));
+                            Accounts account = response.body();
+                            Log.d("LoginActivity", "Received account data: " +
+                                    "ID: " + account.getId() +
+                                    ", Username: " + account.getUsername() +
+                                    ", Password: " + account.getPassword() +
+                                    ", Email: " + account.getEmail() +
+                                    ", Name: " + account.getName() +
+                                    ", Age: " + account.getAge() +
+                                    ", Avatar: " + account.getAvatar());
+
+                            Gson gson = new GsonBuilder().setLenient().create();
+                            String json = gson.toJson(account);
+                            Log.d("API", "API call successful. Received account data: " + json);
+
+                            if (emailEdt.getText().toString().equals(account.getUsername()) && passEdt.getText().toString().equals(account.getPassword())) {
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                            }
+                        } else {
+                            Log.e("LoginActivity", "API call failed. Error: " + response.message());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Accounts> call, Throwable t) {
+                        // Log lỗi onFailure
+                        Log.e("LoginActivity", "API call failed. Throwable: " + t.getMessage());
+                    }
+                });
+            }
+        });
+
     }
 
     private void linkSetup(){
@@ -122,4 +179,5 @@ public class LoginActivity extends AppCompatActivity {
                 .addLink(passLink)
                 .build();
     }
+
 }

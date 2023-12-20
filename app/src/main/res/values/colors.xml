@@ -22,4 +22,6 @@
     <color name="secondary_indicator">#DCDFE9</color>
     <color name="primary_vector_color">#313747</color>
     <color name="clicked_item">#4255FF</color>
+    <color name="incorrect_answer">#FF0000</color>
+    <color name="correct_answer">#4CAF50</color>
 </resources>

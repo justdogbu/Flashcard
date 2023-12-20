@@ -32,9 +32,9 @@
 
 
     <View
+        android:background="@color/secondary_color"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#00FFFFFF" />
+        android:layout_height="1dp"/>
 
     <LinearLayout
         android:layout_weight="1"

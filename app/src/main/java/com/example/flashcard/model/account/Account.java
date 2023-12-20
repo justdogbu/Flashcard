@@ -1,8 +1,8 @@
-package com.example.flashcard.model;
+package com.example.flashcard.model.account;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Accounts {
+public class Account {
     @SerializedName("id")
     private int id;
     @SerializedName("username")
@@ -81,7 +81,7 @@ public class Accounts {
         this.avatar = avatar;
     }
 
-    public Accounts(int id, String username, String password, String email, String name, int age, String avatar) {
+    public Account(int id, String username, String password, String email, String name, int age, String avatar) {
         this.id = id;
         this.username = username;
         this.password = password;

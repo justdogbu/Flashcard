@@ -32,7 +32,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         linkSetup();
 
-        emailEdt = findViewById(R.id.edtEmail);
+        emailEdt = findViewById(R.id.edtUser);
         passEdt = findViewById(R.id.edtPassword);
         dateEdt = findViewById(R.id.edtDate);
 

@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.EditText;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flashcard.model.topic.Topic;
@@ -13,9 +13,6 @@ import com.example.flashcard.utils.CustomOnItemClickListener;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 import com.example.flashcard.R;
-import com.example.flashcard.model.topic.Topic;
-import com.example.flashcard.model.user.User;
-import com.example.flashcard.utils.CustomOnItemClickListener;
 
 import java.util.List;
 
@@ -60,7 +57,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         holder.topicTermsCount.setText(topic.getVocabularyCount() + " Vocabulary");
         holder.topicOwnerNameTxt.setText(topic.getOwnerId().getUsername());
         holder.learnerCount.setText(topic.getUserId().size() + " Learner");
-        Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
+        Picasso.get().load(topic.getOwnerId().getAvatar()).into(holder.topicOwnerImg);
     }
 
     @Override

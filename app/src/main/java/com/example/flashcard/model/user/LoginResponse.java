@@ -3,28 +3,37 @@ package com.example.flashcard.model.user;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class LoginResponse implements Parcelable {
-    private User user;
-    private String token;
-    private String error;
+import com.example.flashcard.model.account.Account;
+import com.google.gson.annotations.SerializedName;
 
-    public LoginResponse(User user, String token, String error) {
-        this.user = user;
-        this.token = token;
-        this.error = error;
+public class LoginResponse implements Parcelable {
+    @SerializedName("data")
+
+    private Account account;
+    @SerializedName("status")
+
+    private String status;
+    @SerializedName("message")
+
+    private String message;
+
+    public LoginResponse(Account account, String status, String message) {
+        this.account = account;
+        this.status = status;
+        this.message = message;
     }
 
     protected LoginResponse(Parcel in) {
-        user = in.readParcelable(User.class.getClassLoader());
-        token = in.readString();
-        error = in.readString();
+        account = in.readParcelable(Account.class.getClassLoader());
+        status = in.readString();
+        message = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(user, flags);
-        dest.writeString(token);
-        dest.writeString(error);
+        dest.writeParcelable(account, flags);
+        dest.writeString(status);
+        dest.writeString(message);
     }
 
     @Override
@@ -44,15 +53,15 @@ public class LoginResponse implements Parcelable {
         }
     };
 
-    public User getUser() {
-        return user;
+    public Account getAccount() {
+        return account;
     }
 
-    public String getToken() {
-        return token;
+    public String getStatus() {
+        return status;
     }
 
-    public String getError() {
-        return error;
+    public String getMessage() {
+        return message;
     }
 }

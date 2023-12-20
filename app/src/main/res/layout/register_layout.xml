@@ -107,7 +107,7 @@
         android:textSize="14sp"/>
 
     <EditText
-        android:id="@+id/edtEmail"
+        android:id="@+id/edtUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="17dp"

@@ -7,27 +7,16 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class User implements Parcelable {
-    @SerializedName("id")
+    @SerializedName("_id")
     private String id;
-    @SerializedName("achievementId")
     private List<String> achievementId;
-    @SerializedName("email")
     private String email;
-    @SerializedName("username")
     private String username;
-    @SerializedName("password")
-    private String password;
-    @SerializedName("profileImage")
     private String profileImage;
-    @SerializedName("bookmarkVocabularyId")
     private List<Object> bookmarkVocabularyId;
-    @SerializedName("vocabularyStatisticId")
     private List<Object> vocabularyStatisticId;
-    @SerializedName("folderId")
     private List<Object> folderId;
-    @SerializedName("learningStatisticsId")
     private List<Object> learningStatisticsId;
-    @SerializedName("topicId")
     private List<Object> topicId;
     @SerializedName("__v")
     private long v;
@@ -58,14 +47,6 @@ public class User implements Parcelable {
 
     public String getUsername() {
         return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setUsername(String username) {
@@ -131,7 +112,7 @@ public class User implements Parcelable {
     public User(String id, List<String> achievementId, String email, String username,
                 String profileImage, List<Object> bookmarkVocabularyId,
                 List<Object> vocabularyStatisticId, List<Object> folderId, List<Object> learningStatisticsId,
-                List<Object> topicId, long v, String password) {
+                List<Object> topicId, long v) {
         this.id = id;
         this.achievementId = achievementId;
         this.email = email;
@@ -143,7 +124,6 @@ public class User implements Parcelable {
         this.learningStatisticsId = learningStatisticsId;
         this.topicId = topicId;
         this.v = v;
-        this.password = password;
     }
 
     protected User(Parcel in) {
@@ -158,7 +138,6 @@ public class User implements Parcelable {
         learningStatisticsId = in.readArrayList(Object.class.getClassLoader());
         topicId = in.readArrayList(Object.class.getClassLoader());
         v = in.readLong();
-        password = in.readString();
     }
 
     @Override
@@ -174,7 +153,6 @@ public class User implements Parcelable {
         dest.writeList(learningStatisticsId);
         dest.writeList(topicId);
         dest.writeLong(v);
-        dest.writeString(password);
     }
 
     @Override

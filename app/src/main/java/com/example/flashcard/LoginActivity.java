@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.example.flashcard.model.Accounts;
+import com.example.flashcard.model.user.User;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
 import com.google.gson.Gson;
@@ -52,36 +53,24 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ApiService apiService = ApiClient.getClient().create(ApiService.class);
-                Call<Accounts> call = apiService.getAccount(emailEdt.getText().toString(), passEdt.getText().toString());
-                call.enqueue(new Callback<Accounts>() {
+                Call<User> call = apiService.getAccount(emailEdt.getText().toString(), passEdt.getText().toString());
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<Accounts> call, Response<Accounts> response) {
+                    public void onResponse(Call<User> call, Response<User> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Log.d("API", "Raw JSON response: " + new Gson().toJson(response.body()));
-                            Accounts account = response.body();
-                            Log.d("LoginActivity", "Received account data: " +
-                                    "ID: " + account.getId() +
-                                    ", Username: " + account.getUsername() +
-                                    ", Password: " + account.getPassword() +
-                                    ", Email: " + account.getEmail() +
-                                    ", Name: " + account.getName() +
-                                    ", Age: " + account.getAge() +
-                                    ", Avatar: " + account.getAvatar());
-
-                            Gson gson = new GsonBuilder().setLenient().create();
-                            String json = gson.toJson(account);
-                            Log.d("API", "API call successful. Received account data: " + json);
-
-                            if (emailEdt.getText().toString().equals(account.getUsername()) && passEdt.getText().toString().equals(account.getPassword())) {
+                            User user = response.body();
+                            if ((emailEdt.getText().toString().equals(user.getUsername()) || emailEdt.getText().toString().equals(user.getEmail())) && passEdt.getText().toString().equals(user.getPassword())) {
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 startActivity(intent);
                             }
+
                         } else {
                             Log.e("LoginActivity", "API call failed. Error: " + response.message());
                         }
                     }
                     @Override
-                    public void onFailure(Call<Accounts> call, Throwable t) {
+                    public void onFailure(Call<User> call, Throwable t) {
                         // Log lỗi onFailure
                         Log.e("LoginActivity", "API call failed. Throwable: " + t.getMessage());
                     }

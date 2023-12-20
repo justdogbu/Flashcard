@@ -4,26 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.example.flashcard.model.Accounts;
-import com.example.flashcard.model.ApiClient;
-import com.example.flashcard.model.ApiHandler;
-import com.example.flashcard.model.ApiService;
+import com.example.flashcard.repository.ApiClient;
+import com.example.flashcard.repository.ApiService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
-
-import java.io.IOException;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

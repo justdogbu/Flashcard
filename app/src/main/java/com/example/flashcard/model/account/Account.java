@@ -1,8 +1,13 @@
 package com.example.flashcard.model.account;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Account {
+public class Account implements Parcelable {
     @SerializedName("id")
     private int id;
     @SerializedName("username")
@@ -17,6 +22,28 @@ public class Account {
     private int age;
     @SerializedName("avatar")
     private String avatar;
+
+    protected Account(Parcel in) {
+        id = in.readInt();
+        username = in.readString();
+        password = in.readString();
+        email = in.readString();
+        name = in.readString();
+        age = in.readInt();
+        avatar = in.readString();
+    }
+
+    public static final Creator<Account> CREATOR = new Creator<Account>() {
+        @Override
+        public Account createFromParcel(Parcel in) {
+            return new Account(in);
+        }
+
+        @Override
+        public Account[] newArray(int size) {
+            return new Account[size];
+        }
+    };
 
     // Getter và setter cho id
     public int getId() {
@@ -91,4 +118,19 @@ public class Account {
         this.avatar = avatar;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(username);
+        dest.writeString(password);
+        dest.writeString(email);
+        dest.writeString(name);
+        dest.writeInt(age);
+        dest.writeString(avatar);
+    }
 }

@@ -2,8 +2,10 @@ package com.example.flashcard.model.topic;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.example.flashcard.model.account.Account;
 import com.google.gson.annotations.SerializedName;
-import com.example.flashcard.model.user.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class Topic implements Parcelable {
     private List<String> learningStatisticsId;
     private List<String> topicInFolderId;
     private List<String> vocabularyId;
-    private User ownerId;
+    private Account ownerId;
     private boolean chosen;
 
     public String getId() {
@@ -93,11 +95,11 @@ public class Topic implements Parcelable {
         this.vocabularyId = vocabularyId;
     }
 
-    public User getOwnerId() {
+    public Account getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(User ownerId) {
+    public void setOwnerId(Account ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -113,7 +115,7 @@ public class Topic implements Parcelable {
                  boolean isPublic, String description,
                  ArrayList<String> userId, List<String> learningStatisticsId,
                  List<String> topicInFolderId, List<String> vocabularyId,
-                 User ownerId, boolean chosen) {
+                 Account ownerId, boolean chosen) {
         this.id = id;
         this.topicName = topicName;
         this.description = description;
@@ -137,7 +139,7 @@ public class Topic implements Parcelable {
         learningStatisticsId = in.createStringArrayList();
         topicInFolderId = in.createStringArrayList();
         vocabularyId = in.createStringArrayList();
-        ownerId = in.readParcelable(User.class.getClassLoader());
+        ownerId = in.readParcelable(Account.class.getClassLoader());
         chosen = in.readByte() != 0;
     }
 

@@ -6,11 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.flashcard.model.account.Account;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 import com.example.flashcard.R;
 import com.example.flashcard.model.folder.Folder;
-import com.example.flashcard.model.user.User;
 import com.example.flashcard.utils.CustomOnItemClickListener;
 
 import java.util.List;
@@ -19,14 +20,14 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
     private Context mContext;
     private List<Folder> folders;
     private int layout;
-    private User user;
+    private Account account;
     private CustomOnItemClickListener customOnItemClickListener;
 
-    public FolderAdapter(Context context, List<Folder> folders, int layout, User user, CustomOnItemClickListener customOnItemClickListener) {
+    public FolderAdapter(Context context, List<Folder> folders, int layout, Account account, CustomOnItemClickListener customOnItemClickListener) {
         this.mContext = context;
         this.folders = folders;
         this.layout = layout;
-        this.user = user;
+        this.account = account;
         this.customOnItemClickListener = customOnItemClickListener;
     }
 
@@ -57,8 +58,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         holder.itemView.setOnClickListener(v -> customOnItemClickListener.onFolderClick(folder));
         holder.folderNameTxt.setText(folder.getFolderName());
         holder.folderDescription.setText(folder.getFolderDescription());
-        holder.folderOwnerNameTxt.setText(user.getUsername());
-        Picasso.get().load(user.getProfileImage()).into(holder.folderOwnerImg);
+        holder.folderOwnerNameTxt.setText(account.getUsername());
+        Picasso.get().load(account.getAvatar()).into(holder.folderOwnerImg);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -29,6 +30,8 @@ import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +44,7 @@ public class Utils {
             .build();
     private static final Translator engToVietTranslator = Translation.getClient(engToVietOptions);
 
-    public void showSnackBar(View view, String message) {
+    public static void showSnackBar(View view, String message) {
         Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         snackBar.setAction("Close", new View.OnClickListener() {
             @Override
@@ -57,7 +60,7 @@ public class Utils {
         Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.message_dialog);
-
+        Log.d("Dialog", "Show " + message);
         Window window = dialog.getWindow();
         if (window == null) {
             return;

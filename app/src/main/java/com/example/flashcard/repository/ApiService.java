@@ -1,4 +1,6 @@
-package com.example.flashcard.model;
+package com.example.flashcard.repository;
+
+import com.example.flashcard.model.Accounts;
 
 import java.util.List;
 import retrofit2.Call;

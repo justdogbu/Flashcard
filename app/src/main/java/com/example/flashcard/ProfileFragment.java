@@ -1,12 +1,24 @@
 package com.example.flashcard;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.flashcard.utils.OnDialogConfirmListener;
+import com.example.flashcard.utils.OnDrawerNavigationPressedListener;
+import com.example.flashcard.viewmodel.HomeDataViewModel;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +35,17 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private HomeDataViewModel homeDataViewModel;
+
+
+    private SharedPreferences sharedPref;
+    private static final int UPDATE_USER_REQUEST = 555;
+    private OnDrawerNavigationPressedListener onDrawerNavigationPressedListener;
+    private OnDialogConfirmListener onDialogConfirmListener;
+    private TextView profileUsername;
+    private ShapeableImageView profileImage;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -49,6 +72,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -59,6 +83,53 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        homeDataViewModel = new ViewModelProvider(requireActivity()).get(HomeDataViewModel.class);
+        sharedPref = requireActivity().getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
+
+        profileUsername = (TextView) view.findViewById(R.id.profileUsername);
+        profileImage = (ShapeableImageView) view.findViewById(R.id.profileImage);
+
+        homeDataViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                profileUsername.setText(user.getUsername());
+                Picasso.get().load(Uri.parse(user.getAvatar())).into(profileImage);
+            }
+        });
+            return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnDrawerNavigationPressedListener && context instanceof OnDialogConfirmListener) {
+            onDrawerNavigationPressedListener = (OnDrawerNavigationPressedListener) context;
+            onDialogConfirmListener = (OnDialogConfirmListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onDrawerNavigationPressedListener = null;
+        onDialogConfirmListener = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private void getUserVM() {
+        homeDataViewModel = new ViewModelProvider(requireActivity()).get(HomeDataViewModel.class);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            getUserVM();
+        }
     }
 }

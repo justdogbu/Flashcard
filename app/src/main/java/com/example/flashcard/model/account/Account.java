@@ -20,7 +20,7 @@ public class Account implements Parcelable {
     private String name;
     @SerializedName("age")
     private int age;
-    @SerializedName("avatar")
+    @SerializedName("profile_image")
     private String avatar;
 
     protected Account(Parcel in) {

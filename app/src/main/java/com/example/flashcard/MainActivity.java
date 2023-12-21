@@ -7,7 +7,9 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,13 +17,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnBoardActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
 
     int[] testImages = {R.drawable.avt, R.drawable.image2};
@@ -30,11 +33,13 @@ public class OnBoardActivity extends AppCompatActivity {
     private Handler slideHandler = new Handler();
     private ImageView iv1, iv2, iv3, iv4, iv5;
     private Button signUpBtn, loginBtn;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_layout);
+        sharedPref = getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
 
         linkSetup();
 
@@ -98,7 +103,7 @@ public class OnBoardActivity extends AppCompatActivity {
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signUpIntent = new Intent(OnBoardActivity.this, SignUpActivity.class);
+                Intent signUpIntent = new Intent(MainActivity.this, SignUpActivity.class);
                 startActivity(signUpIntent);
             }
         });
@@ -107,11 +112,20 @@ public class OnBoardActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginIntent = new Intent(OnBoardActivity.this, LoginActivity.class);
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
             }
         });
+
+        String userJson = sharedPref.getString("USERDATA", null);
+        if (userJson != null) {
+            Intent homeScreen = new Intent(MainActivity.this, HomeActivity.class);
+            homeScreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(homeScreen);
+        }
+
     }
+
 
     private Runnable sliderRunnale = new Runnable() {
         @Override

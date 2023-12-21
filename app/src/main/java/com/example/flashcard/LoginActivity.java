@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.flashcard.model.account.Account;
@@ -38,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton backBtn;
 //    private ApiService apiService = ApiClient.getClient().create(ApiService.class);
     private SharedPreferences sharedPref;
+    private LinearLayout contentLayout;
+    private ProgressBar progressLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_layout);
         userEdt = findViewById(R.id.edtUser);
         passEdt = findViewById(R.id.edtPassword);
+        contentLayout = findViewById(R.id.contentLayout);
+        progressLoading = findViewById(R.id.progressLoading);
 
         backBtn = findViewById(R.id.backBtn);
         sharedPref = getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
@@ -62,12 +68,14 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressLoading.setVisibility(View.VISIBLE);
                 ApiService apiService = ApiClient.getClient().create(ApiService.class);
                 String user = userEdt.getText().toString();
                 String pass = passEdt.getText().toString();
 
                 if(user.isEmpty() || pass.isEmpty()){
                     Utils.showSnackBar(v, "Please fill your username and password");
+                    progressLoading.setVisibility(View.GONE);
                     return;
                 }
                 Call<LoginResponse> call = apiService.getAccount(user, pass);
@@ -78,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.isSuccessful() && !response.body().getStatus().equals("NOT OK")) {
                             if(response.body().getStatus().equals("Invalid")){
                                 Log.d("Test", "Wrong");
+                                progressLoading.setVisibility(View.GONE);
                                 Utils.showDialog(Gravity.CENTER, "Wrong username or password", LoginActivity.this );
                             }
                             else{

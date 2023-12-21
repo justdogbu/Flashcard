@@ -24,7 +24,7 @@
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:id="@+id/returnButton"
+                android:id="@+id/returnBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -60,6 +60,7 @@
                 app:strokeColor="@color/black"
                 app:strokeWidth="1dp" />
 
+
             <ImageButton
                 android:id="@+id/pickImageButton"
                 android:layout_width="30dp"
@@ -81,7 +82,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/profileEmailEdt"
+            android:id="@+id/profileUserEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

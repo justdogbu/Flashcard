@@ -1,9 +1,8 @@
-package com.example.flashcard.model.user;
+package com.example.flashcard.model.account;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.flashcard.model.account.Account;
 import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse implements Parcelable {

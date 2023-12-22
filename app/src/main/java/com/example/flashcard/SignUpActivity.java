@@ -22,7 +22,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private boolean isPasswordShow = false;
     private EditText emailEdt, passEdt, dateEdt;
-    private ImageButton backBtn, googleBtn, facebookBtn, calenderBtn, viewBtn;
+    private ImageButton backBtn, calenderBtn, viewBtn;
     private Button signUpBtn;
     private TextView tvLink;
     @Override

@@ -6,8 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +19,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.example.flashcard.model.user.UpdateResponse;
 import com.example.flashcard.model.user.User;
+import com.example.flashcard.repository.ApiClient;
+import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.ResetPasswordConfirmListener;
 import com.example.flashcard.utils.Utils;
@@ -24,8 +30,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 
-public class ProfileActivity extends AppCompatActivity implements ResetPasswordConfirmListener {
+import java.io.ByteArrayOutputStream;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ProfileActivity extends AppCompatActivity implements ResetPasswordConfirmListener {
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Bitmap bitmap;
     private SharedPreferences sharedPref;
 //    private final ApiClient apiClient = ApiClient.getClient().create(ApiClient.class);
     private final int PICK_IMAGE_INTENT = 1;
@@ -64,12 +77,17 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
         pickImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pickingImage = new Intent(Intent.ACTION_PICK);
-                pickingImage.setType("image/*");
-                pickingImage.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-                startActivityForResult(pickingImage, PICK_IMAGE_INTENT);
+//                Intent pickingImage = new Intent(Intent.ACTION_PICK);
+//                pickingImage.setType("image/*");
+//                pickingImage.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+//                startActivityForResult(pickingImage, PICK_IMAGE_INTENT);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
             }
         });
+
 
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,8 +105,9 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                     return;
                 }
 
-                updateProfileProgress.setVisibility(View.VISIBLE);
-                profileContent.setVisibility(View.INVISIBLE);
+//                updateProfileProgress.setVisibility(View.VISIBLE);
+//                profileContent.setVisibility(View.INVISIBLE);
+                updateUserProfile(user.getId(), profileUser.getText().toString(), convertBitmapToString());
             }
         });
         /*saveProfileBtn.setOnClickListener(v -> {
@@ -151,6 +170,46 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
     public void changePassword(String oldPassword, String newPassword) {
 
     }
+
+    private void updateUserProfile(int userID, String newUsername, String newProfileImage) {
+        ApiService apiService = ApiClient.getClient();
+
+        Call<UpdateResponse> call = apiService.updateUserProfile(userID, newUsername, newProfileImage);
+
+        call.enqueue(new Callback<UpdateResponse>() {
+            @Override
+            public void onResponse(Call<UpdateResponse> call, Response<UpdateResponse> response) {
+                if (response.isSuccessful()) {
+                    UpdateResponse apiResponse = response.body();
+                    if (apiResponse != null && "OK".equals(apiResponse.getStatus())) {
+                        // Xử lý khi cập nhật thành công
+                        // Ví dụ: Hiển thị thông báo, cập nhật UI, v.v.
+                    } else {
+                        // Xử lý khi cập nhật không thành công
+                        // Ví dụ: Hiển thị thông báo lỗi
+                    }
+                } else {
+                    // Xử lý khi có lỗi kết nối đến máy chủ
+                    // Ví dụ: Hiển thị thông báo lỗi kết nối
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdateResponse> call, Throwable t) {
+                // Xử lý khi có lỗi trong quá trình thực hiện request
+                // Ví dụ: Hiển thị thông báo lỗi
+            }
+        });
+    }
+    private String convertBitmapToString() {
+        Bitmap bitmap = ((BitmapDrawable) profileImage.getDrawable()).getBitmap();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+
 
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

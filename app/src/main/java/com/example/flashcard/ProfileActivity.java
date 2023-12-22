@@ -55,7 +55,9 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
         profileContent = findViewById(R.id.profileContent);
         returnBtn = findViewById(R.id.returnBtn);
 
-        Picasso.get().load(Uri.parse(user.getProfileImage())).into(profileImage);
+        if(user.getProfileImage() != null) {
+            Picasso.get().load(Uri.parse(user.getProfileImage())).into(profileImage);
+        }
         sharedPref = getSharedPreferences(Constant.SHARE_PREF, Context.MODE_PRIVATE);
         profileUser.setText(user.getUsername());
 

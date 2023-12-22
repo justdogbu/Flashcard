@@ -19,8 +19,8 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.flashcard.R;
-import com.example.flashcard.model.account.Account;
 import com.example.flashcard.model.quiz.Quiz;
+import com.example.flashcard.model.user.User;
 import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -389,8 +389,8 @@ public class Utils {
         dialog.show();
     }
     
-    public static Account getUserFromSharedPreferences(Context mContext, SharedPreferences sharedPreferences) {
+    public static User getUserFromSharedPreferences(Context mContext, SharedPreferences sharedPreferences) {
         String userDataJson = sharedPreferences.getString("USERDATA", null);
-        return new Gson().fromJson(userDataJson, Account.class);
+        return new Gson().fromJson(userDataJson, User.class);
     }
 }

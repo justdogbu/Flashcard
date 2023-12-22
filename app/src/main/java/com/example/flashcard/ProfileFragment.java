@@ -102,7 +102,9 @@ public class ProfileFragment extends Fragment {
         homeDataViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 profileUsername.setText(user.getUsername());
-                Picasso.get().load(Uri.parse(user.getProfileImage())).into(profileImage);
+                if(user.getProfileImage() != null) {
+                    Picasso.get().load(Uri.parse(user.getProfileImage())).into(profileImage);
+                }
             }
         });
 

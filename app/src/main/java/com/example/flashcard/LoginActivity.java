@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.flashcard.model.account.Account;
-import com.example.flashcard.model.user.LoginResponse;
+import com.example.flashcard.model.account.LoginResponse;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.ResetPasswordConfirmListener;

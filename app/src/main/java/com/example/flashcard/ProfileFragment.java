@@ -20,7 +20,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.flashcard.model.account.Account;
+import com.example.flashcard.model.user.User;
+import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.OnDialogConfirmListener;
 import com.example.flashcard.utils.OnDrawerNavigationPressedListener;
 import com.example.flashcard.viewmodel.HomeDataViewModel;
@@ -92,7 +93,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         homeDataViewModel = new ViewModelProvider(requireActivity()).get(HomeDataViewModel.class);
-        sharedPref = requireActivity().getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
+        sharedPref = requireActivity().getSharedPreferences(Constant.SHARE_PREF, Context.MODE_PRIVATE);
 
         profileUsername = (TextView) view.findViewById(R.id.profileUsername);
         profileImage = (ShapeableImageView) view.findViewById(R.id.profileImage);
@@ -101,7 +102,7 @@ public class ProfileFragment extends Fragment {
         homeDataViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 profileUsername.setText(user.getUsername());
-                Picasso.get().load(Uri.parse(user.getAvatar())).into(profileImage);
+                Picasso.get().load(Uri.parse(user.getProfileImage())).into(profileImage);
             }
         });
 
@@ -109,7 +110,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent goToAccount = new Intent(requireActivity(), ProfileActivity.class);
-                goToAccount.putExtra("USERDATA", homeDataViewModel.getUser().getValue());
+                goToAccount.putExtra(Constant.USER_DATA, homeDataViewModel.getUser().getValue());
                 startActivityForResult(goToAccount, UPDATE_USER_REQUEST);
             }
         });
@@ -137,13 +138,13 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == UPDATE_USER_REQUEST && resultCode == RESULT_OK && data != null) {
-            Account temp = data.getParcelableExtra("USERDATA");
+            User temp = data.getParcelableExtra(Constant.USER_DATA);
             if (temp != null) {
                 Gson gson = new GsonBuilder().setLenient().create();
                 homeDataViewModel.setUser(temp);
                 profileUsername.setText(homeDataViewModel.getUser().getValue().getUsername());
-                sharedPref.edit().putString("USERDATA", gson.toJson(homeDataViewModel.getUser().getValue()) ).apply();
-                Picasso.get().load(Uri.parse(homeDataViewModel.getUser().getValue().getAvatar())).into(profileImage);
+                sharedPref.edit().putString(Constant.USER_DATA, gson.toJson(homeDataViewModel.getUser().getValue()) ).apply();
+                Picasso.get().load(Uri.parse(homeDataViewModel.getUser().getValue().getProfileImage())).into(profileImage);
             }
         }
     }

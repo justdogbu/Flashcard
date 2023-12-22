@@ -1,6 +1,6 @@
 package com.example.flashcard.repository;
 
-import com.example.flashcard.model.account.LoginResponse;
+import com.example.flashcard.model.user.LoginResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Field;

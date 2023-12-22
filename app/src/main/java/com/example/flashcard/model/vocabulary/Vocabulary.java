@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class Vocabulary implements Parcelable {
-    private String id;
+    private int id;
     private String vocabulary;
     private String meaning;
     private String topicId;
@@ -15,7 +15,7 @@ public class Vocabulary implements Parcelable {
     private boolean isFront;
 
     public Vocabulary(
-            String id,
+            int id,
             String vocabulary,
             String meaning,
             String topicId,
@@ -32,7 +32,7 @@ public class Vocabulary implements Parcelable {
     }
 
     protected Vocabulary(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         vocabulary = in.readString();
         meaning = in.readString();
         topicId = in.readString();
@@ -53,7 +53,7 @@ public class Vocabulary implements Parcelable {
         }
     };
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -83,7 +83,7 @@ public class Vocabulary implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(vocabulary);
         dest.writeString(meaning);
         dest.writeString(topicId);
@@ -97,18 +97,4 @@ public class Vocabulary implements Parcelable {
         return 0;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        Vocabulary other = (Vocabulary) obj;
-
-        return id != null ? id.equals(other.id) : other.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

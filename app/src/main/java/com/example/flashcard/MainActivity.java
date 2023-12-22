@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.flashcard.utils.Constant;
 import com.google.gson.Gson;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.onboard_layout);
-        sharedPref = getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences(Constant.SHARE_PREF, Context.MODE_PRIVATE);
 
         linkSetup();
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String userJson = sharedPref.getString("USERDATA", null);
+        String userJson = sharedPref.getString(Constant.USER_DATA, null);
         if (userJson != null) {
             Intent homeScreen = new Intent(MainActivity.this, HomeActivity.class);
             homeScreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

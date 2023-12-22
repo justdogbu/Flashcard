@@ -1,6 +1,5 @@
 package com.example.flashcard;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -9,38 +8,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.example.flashcard.model.account.Account;
-import com.example.flashcard.repository.ApiClient;
-import com.example.flashcard.utils.CustomOnItemClickListener;
+import com.example.flashcard.model.user.User;
+import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.ResetPasswordConfirmListener;
 import com.example.flashcard.utils.Utils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity implements ResetPasswordConfirmListener {
 
     private SharedPreferences sharedPref;
 //    private final ApiClient apiClient = ApiClient.getClient().create(ApiClient.class);
     private final int PICK_IMAGE_INTENT = 1;
-    private Account account;
+    private User user;
     private ShapeableImageView profileImage;
     private EditText profileUser;
     private ImageButton pickImageButton;
@@ -66,9 +55,9 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
         profileContent = findViewById(R.id.profileContent);
         returnBtn = findViewById(R.id.returnBtn);
 
-        Picasso.get().load(Uri.parse(account.getAvatar())).into(profileImage);
-        sharedPref = getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
-        profileUser.setText(account.getUsername());
+        Picasso.get().load(Uri.parse(user.getProfileImage())).into(profileImage);
+        sharedPref = getSharedPreferences(Constant.SHARE_PREF, Context.MODE_PRIVATE);
+        profileUser.setText(user.getUsername());
 
         pickImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
             @Override
             public void onClick(View v) {
                 Intent goBack = new Intent();
-                goBack.putExtra("USERDATA", account);
+                goBack.putExtra(Constant.USER_DATA, user);
                 setResult(Activity.RESULT_OK, goBack);
                 finish();
             }
@@ -145,8 +134,8 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
     }
 
     private void getUser() {
-        account = getIntent().getParcelableExtra("USERDATA");
-        if (account == null) {
+        user = getIntent().getParcelableExtra(Constant.USER_DATA);
+        if (user == null) {
             finish();
         }
     }

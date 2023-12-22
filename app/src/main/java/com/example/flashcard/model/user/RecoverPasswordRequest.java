@@ -1,4 +1,4 @@
-package com.example.flashcard.model.account;
+package com.example.flashcard.model.user;
 
 public class RecoverPasswordRequest {
     private String email;

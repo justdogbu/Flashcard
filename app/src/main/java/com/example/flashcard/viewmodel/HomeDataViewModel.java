@@ -4,23 +4,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.flashcard.model.account.Account;
 import com.example.flashcard.model.folder.Folder;
 import com.example.flashcard.model.topic.Topic;
+import com.example.flashcard.model.user.User;
 
 import java.util.List;
 
 public class HomeDataViewModel extends ViewModel {
-    private MutableLiveData<Account> user = new MutableLiveData<>();
+    private MutableLiveData<User> user = new MutableLiveData<>();
     private MutableLiveData<List<Topic>> topicsList = new MutableLiveData<>();
     private MutableLiveData<List<Folder>> folderList = new MutableLiveData<>();
     private MutableLiveData<List<Topic>> publicTopicsList = new MutableLiveData<>();
 
-    public LiveData<Account> getUser() {
+    public LiveData<User> getUser() {
         return user;
     }
 
-    public void setUser(Account user) {
+    public void setUser(User user) {
         this.user.setValue(user);
     }
 

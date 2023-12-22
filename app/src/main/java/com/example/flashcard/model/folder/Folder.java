@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Folder implements Parcelable {
     @SerializedName("_id")
-    private String id;
+    private int id;
     private String userId;
     private String folderName;
     private String folderDescription;
@@ -15,7 +15,7 @@ public class Folder implements Parcelable {
     private ArrayList<String> topicInFolderId;
     private boolean isChosen;
 
-    public Folder(String id, String userId, String folderNameEnglish, String folderNameVietnamese, int topicCount, ArrayList<String> topicInFolderId, boolean isChosen) {
+    public Folder(int id, String userId, String folderNameEnglish, String folderNameVietnamese, int topicCount, ArrayList<String> topicInFolderId, boolean isChosen) {
         this.id = id;
         this.userId = userId;
         this.folderName = folderNameEnglish;
@@ -26,7 +26,7 @@ public class Folder implements Parcelable {
     }
 
     protected Folder(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         userId = in.readString();
         folderName = in.readString();
         folderDescription = in.readString();
@@ -37,7 +37,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(userId);
         dest.writeString(folderName);
         dest.writeString(folderDescription);
@@ -63,7 +63,7 @@ public class Folder implements Parcelable {
         }
     };
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

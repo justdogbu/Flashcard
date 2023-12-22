@@ -17,10 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.flashcard.model.account.Account;
-import com.example.flashcard.model.account.LoginResponse;
+import com.example.flashcard.model.user.LoginResponse;
+import com.example.flashcard.model.user.User;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
+import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.ResetPasswordConfirmListener;
 import com.example.flashcard.utils.Utils;
 import com.google.gson.Gson;
@@ -53,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         progressLoading = findViewById(R.id.progressLoading);
 
         backBtn = findViewById(R.id.backBtn);
-        sharedPref = getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences(Constant.SHARE_PREF, Context.MODE_PRIVATE);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,21 +92,20 @@ public class LoginActivity extends AppCompatActivity {
                             else{
                                 Log.d("API", "Raw JSON response: " + new Gson().toJson(response.body()));
                                 LoginResponse loginResponse = response.body();
-                                Account account = loginResponse.getAccount();
-                                Log.d("LoginActivity", "Received account data: " +
-                                        "ID: " + account.getId() +
-                                        ", Username: " + account.getUsername() +
-                                        ", Password: " + account.getPassword() +
-                                        ", Email: " + account.getEmail() +
-                                        ", Name: " + account.getName() +
-                                        ", Age: " + account.getAge() +
-                                        ", Avatar: " + account.getAvatar());
+                                User user = loginResponse.getUser();
+                                Log.d("LoginActivity", "Received user data: " +
+                                        "ID: " + user.getId() +
+                                        ", Username: " + user.getUsername() +
+                                        ", Password: " + user.getPassword() +
+                                        ", Email: " + user.getEmail() +
+                                        ", Age: " + user.getAge() +
+                                        ", Avatar: " + user.getProfileImage());
 
                                 Gson gson = new GsonBuilder().setLenient().create();
-                                String json = gson.toJson(account);
-                                Log.d("API", "API call successful. Received account data: " + json);
+                                String json = gson.toJson(user);
+                                Log.d("API", "API call successful. Received user data: " + json);
                                 SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("USERDATA", gson.toJson(account));
+                                editor.putString(Constant.USER_DATA, gson.toJson(user));
                                 editor.apply();
 
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);

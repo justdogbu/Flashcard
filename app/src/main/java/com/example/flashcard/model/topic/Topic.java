@@ -3,7 +3,7 @@ package com.example.flashcard.model.topic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.flashcard.model.account.Account;
+import com.example.flashcard.model.user.User;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Topic implements Parcelable {
     @SerializedName("_id")
-    private String id;
+    private int id;
     private String topicName;
     private String description;
     private int vocabularyCount;
@@ -20,14 +20,14 @@ public class Topic implements Parcelable {
     private List<String> learningStatisticsId;
     private List<String> topicInFolderId;
     private List<String> vocabularyId;
-    private Account ownerId;
+    private User ownerId;
     private boolean chosen;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -95,11 +95,11 @@ public class Topic implements Parcelable {
         this.vocabularyId = vocabularyId;
     }
 
-    public Account getOwnerId() {
+    public User getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Account ownerId) {
+    public void setOwnerId(User ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -111,11 +111,11 @@ public class Topic implements Parcelable {
         this.chosen = chosen;
     }
 
-    public Topic(String id, String topicName, int vocabularyCount,
+    public Topic(int id, String topicName, int vocabularyCount,
                  boolean isPublic, String description,
                  ArrayList<String> userId, List<String> learningStatisticsId,
                  List<String> topicInFolderId, List<String> vocabularyId,
-                 Account ownerId, boolean chosen) {
+                 User ownerId, boolean chosen) {
         this.id = id;
         this.topicName = topicName;
         this.description = description;
@@ -130,7 +130,7 @@ public class Topic implements Parcelable {
     }
 
     protected Topic(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         topicName = in.readString();
         description = in.readString();
         vocabularyCount = in.readInt();
@@ -139,13 +139,13 @@ public class Topic implements Parcelable {
         learningStatisticsId = in.createStringArrayList();
         topicInFolderId = in.createStringArrayList();
         vocabularyId = in.createStringArrayList();
-        ownerId = in.readParcelable(Account.class.getClassLoader());
+        ownerId = in.readParcelable(User.class.getClassLoader());
         chosen = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(topicName);
         dest.writeString(description);
         dest.writeInt(vocabularyCount);

@@ -30,7 +30,8 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.flashcard.model.account.Account;
+import com.example.flashcard.model.user.User;
+import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.Utils;
 import com.example.flashcard.viewmodel.HomeDataViewModel;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -73,13 +74,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        sharedPref = getSharedPreferences("SHAREDPREFKEY", Context.MODE_PRIVATE);
-        if (sharedPref.getString("USERDATA", null) == null) {
+        sharedPref = getSharedPreferences(Constant.SHARE_PREF, Context.MODE_PRIVATE);
+        if (sharedPref.getString(Constant.USER_DATA, null) == null) {
             backtoIntro();
             return;
         } else {
             userViewModel = new ViewModelProvider(this).get(HomeDataViewModel.class);
-            userViewModel.setUser(new Gson().fromJson(sharedPref.getString("USERDATA", null), Account.class));
+            userViewModel.setUser(new Gson().fromJson(sharedPref.getString(Constant.USER_DATA, null), User.class));
         }
 
         bottomNavigationView = findViewById(R.id.bottomNavbar);
@@ -129,7 +130,7 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_logout:
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.remove("USERDATA");
+                        editor.remove(Constant.USER_DATA);
                         editor.apply();
                         backtoIntro();
                         return true;

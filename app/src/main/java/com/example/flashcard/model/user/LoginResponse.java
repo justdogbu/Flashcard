@@ -1,4 +1,4 @@
-package com.example.flashcard.model.account;
+package com.example.flashcard.model.user;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class LoginResponse implements Parcelable {
     @SerializedName("data")
 
-    private Account account;
+    private User user;
     @SerializedName("status")
 
     private String status;
@@ -16,21 +16,21 @@ public class LoginResponse implements Parcelable {
 
     private String message;
 
-    public LoginResponse(Account account, String status, String message) {
-        this.account = account;
+    public LoginResponse(User user, String status, String message) {
+        this.user = user;
         this.status = status;
         this.message = message;
     }
 
     protected LoginResponse(Parcel in) {
-        account = in.readParcelable(Account.class.getClassLoader());
+        user = in.readParcelable(User.class.getClassLoader());
         status = in.readString();
         message = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(account, flags);
+        dest.writeParcelable(user, flags);
         dest.writeString(status);
         dest.writeString(message);
     }
@@ -52,8 +52,8 @@ public class LoginResponse implements Parcelable {
         }
     };
 
-    public Account getAccount() {
-        return account;
+    public User getUser() {
+        return user;
     }
 
     public String getStatus() {

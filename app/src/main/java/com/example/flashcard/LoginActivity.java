@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressLoading.setVisibility(View.VISIBLE);
-                ApiService apiService = ApiClient.getClient().create(ApiService.class);
+                ApiService apiService = ApiClient.getClient();
                 String user = userEdt.getText().toString();
                 String pass = passEdt.getText().toString();
 
@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                     progressLoading.setVisibility(View.GONE);
                     return;
                 }
-                Call<LoginResponse> call = apiService.getAccount(user, pass);
+                Call<LoginResponse> call = apiService.login(user, pass);
                 Log.d("Test Call", call.toString());
                 call.enqueue(new Callback<LoginResponse>() {
                     @Override
@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         } else {
                             Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            progressLoading.setVisibility(View.GONE);
 
                             Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", LoginActivity.this );
                             Log.e("LoginActivity", "API call failed. Error: " + response.message());
@@ -122,6 +123,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
                         // Log lỗi onFailure
+                        progressLoading.setVisibility(View.GONE);
+
                         Log.e("LoginActivity", "API call failed. Throwable: " + t.getMessage());
                     }
                 });

@@ -1,4 +1,4 @@
-package com.tdtu.finalproject.adapter;
+package com.example.flashcard.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -55,9 +55,9 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         });
         holder.topicNameTxt.setText(topic.getTopicName());
         holder.topicTermsCount.setText(topic.getVocabularyCount() + " Vocabulary");
-        holder.topicOwnerNameTxt.setText(topic.getOwnerId().getUsername());
+        //holder.topicOwnerNameTxt.setText(topic.getOwnerId().getUsername());
         holder.learnerCount.setText(topic.getUserId().size() + " Learner");
-        Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
+        //Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class Topic implements Parcelable {
     private List<String> learningStatisticsId;
     private List<String> topicInFolderId;
     private List<String> vocabularyId;
-    private User ownerId;
+    private int ownerId;
     private boolean chosen;
 
     public int getId() {
@@ -95,11 +95,11 @@ public class Topic implements Parcelable {
         this.vocabularyId = vocabularyId;
     }
 
-    public User getOwnerId() {
+    public int getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(User ownerId) {
+    public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -115,7 +115,7 @@ public class Topic implements Parcelable {
                  boolean isPublic, String description,
                  ArrayList<String> userId, List<String> learningStatisticsId,
                  List<String> topicInFolderId, List<String> vocabularyId,
-                 User ownerId, boolean chosen) {
+                 int ownerId, boolean chosen) {
         this.id = id;
         this.topicName = topicName;
         this.description = description;
@@ -139,7 +139,7 @@ public class Topic implements Parcelable {
         learningStatisticsId = in.createStringArrayList();
         topicInFolderId = in.createStringArrayList();
         vocabularyId = in.createStringArrayList();
-        ownerId = in.readParcelable(User.class.getClassLoader());
+        ownerId = in.readInt();
         chosen = in.readByte() != 0;
     }
 
@@ -154,7 +154,7 @@ public class Topic implements Parcelable {
         dest.writeStringList(learningStatisticsId);
         dest.writeStringList(topicInFolderId);
         dest.writeStringList(vocabularyId);
-        dest.writeParcelable(ownerId, flags);
+        dest.writeInt(ownerId);
         dest.writeByte((byte) (chosen ? 1 : 0));
     }
 

@@ -1,5 +1,6 @@
 package com.example.flashcard;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -11,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,8 @@ import com.example.flashcard.utils.ResetPasswordConfirmListener;
 import com.example.flashcard.utils.Utils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -37,11 +41,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity implements ResetPasswordConfirmListener {
-    private static final int PICK_IMAGE_REQUEST = 1;
     private Bitmap bitmap;
     private SharedPreferences sharedPref;
-//    private final ApiClient apiClient = ApiClient.getClient().create(ApiClient.class);
-    private final int PICK_IMAGE_INTENT = 1;
     private User user;
     private ShapeableImageView profileImage;
     private EditText profileUser;
@@ -77,14 +78,14 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
         pickImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent pickingImage = new Intent(Intent.ACTION_PICK);
-//                pickingImage.setType("image/*");
-//                pickingImage.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-//                startActivityForResult(pickingImage, PICK_IMAGE_INTENT);
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                Intent pickingImage = new Intent(Intent.ACTION_PICK);
+                pickingImage.setType("image/*");
+                pickingImage.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+                startActivityForResult(pickingImage, Constant.PICK_IMAGE_INTENT);
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(intent, Constant.PICK_IMAGE_REQUEST);
             }
         });
 
@@ -105,8 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                     return;
                 }
 
-//                updateProfileProgress.setVisibility(View.VISIBLE);
-//                profileContent.setVisibility(View.INVISIBLE);
+                updateProfileProgress.setVisibility(View.VISIBLE);
                 updateUserProfile(user.getId(), profileUser.getText().toString(), convertBitmapToString());
             }
         });
@@ -173,7 +173,6 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
 
     private void updateUserProfile(int userID, String newUsername, String newProfileImage) {
         ApiService apiService = ApiClient.getClient();
-
         Call<UpdateResponse> call = apiService.updateUserProfile(userID, newUsername, newProfileImage);
 
         call.enqueue(new Callback<UpdateResponse>() {
@@ -182,13 +181,23 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                 if (response.isSuccessful()) {
                     UpdateResponse apiResponse = response.body();
                     if (apiResponse != null && "OK".equals(apiResponse.getStatus())) {
-                        // Xử lý khi cập nhật thành công
-                        // Ví dụ: Hiển thị thông báo, cập nhật UI, v.v.
+                        User newUser = apiResponse.getData();
+                        Log.d("Profile", newUser.toString());
+                        Gson gson = new GsonBuilder().setLenient().create();
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(Constant.USER_DATA, gson.toJson(newUser));
+                        editor.apply();
+                        user = newUser;
+
                     } else {
+                        updateProfileProgress.setVisibility(View.GONE);
+                        Utils.showDialog(Gravity.CENTER, "SOMETHING WENT WRONG", ProfileActivity.this);
                         // Xử lý khi cập nhật không thành công
                         // Ví dụ: Hiển thị thông báo lỗi
                     }
                 } else {
+                    updateProfileProgress.setVisibility(View.GONE);
+                    Utils.showDialog(Gravity.CENTER, "SOMETHING WENT WRONG", ProfileActivity.this);
                     // Xử lý khi có lỗi kết nối đến máy chủ
                     // Ví dụ: Hiển thị thông báo lỗi kết nối
                 }
@@ -211,53 +220,13 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
 
 
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == PICK_IMAGE_INTENT && resultCode == Activity.RESULT_OK && data != null) {
-//            Log.d("ProfileActivity", "OK");
-//        }
-////            Uri selectedImageUri = data.getData();
-////            InputStream inputStream = null;
-////            try {
-////                inputStream = getContentResolver().openInputStream(selectedImageUri);
-////                File file = new File(getCacheDir(), "upload_image.jpg");
-////                FileOutputStream outputStream = new FileOutputStream(file);
-////                if (inputStream != null) {
-////                    byte[] buffer = new byte[1024];
-////                    int bytesRead;
-////                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-////                        outputStream.write(buffer, 0, bytesRead);
-////                    }
-////                    inputStream.close();
-////                }
-////                String token = sharedPref.getString(getString(R.string.token_key), null);
-////                profileContent.setVisibility(View.INVISIBLE);
-////                updateProfileProgress.setVisibility(View.VISIBLE);
-////                apiClient.uploadImage(file, account.getId(), token).thenAcceptAsync(it -> {
-////                    SharedPreferences.Editor editor = sharedPref.edit();
-////                    String newUserJson = new Gson().toJson(acc.getUser());
-////                    editor.putString(getString(R.string.user_data_key), newUserJson);
-////                    editor.apply();
-////                    user = it.getUser();
-////                    Log.d("USER TAG", new Gson().toJson(user));
-////                    runOnUiThread(() -> {
-////                        profileImage.setImageURI(data.getData());
-////                        profileContent.setVisibility(View.VISIBLE);
-////                        updateProfileProgress.setVisibility(View.GONE);
-////                        Utils.showDialog(Gravity.CENTER, it.getMessage(), ProfileActivity.this);
-////                    });
-////                }).exceptionally(e -> {
-////                    runOnUiThread(() -> {
-////                        profileContent.setVisibility(View.VISIBLE);
-////                        updateProfileProgress.setVisibility(View.GONE);
-////                        Utils.showDialog(Gravity.CENTER, e, ProfileActivity.this);
-////                    });
-////                    return null;
-////                });
-////            } catch (IOException e) {
-////                e.printStackTrace();
-////            }
-////        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constant.PICK_IMAGE_INTENT && resultCode == Activity.RESULT_OK && data != null) {
+            Log.d("ProfileActivity", "OK");
+            Uri selectedImageUri = data.getData();
+            profileImage.setImageURI(selectedImageUri);
+        }
+    }
 }

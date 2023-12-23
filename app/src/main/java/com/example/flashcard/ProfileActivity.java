@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.flashcard.model.user.UpdateResponse;
 import com.example.flashcard.model.user.User;
@@ -107,7 +108,7 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                 }
 
                 updateProfileProgress.setVisibility(View.VISIBLE);
-                updateUserProfile(user.getId(), profileUser.getText().toString(), convertBitmapToString());
+                updateUserProfile(user.getId(), convertBitmapToString());
             }
         });
         /*saveProfileBtn.setOnClickListener(v -> {
@@ -171,42 +172,44 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
 
     }
 
-    private void updateUserProfile(int userID, String newUsername, String newProfileImage) {
+    private void updateUserProfile(int userID, String newProfileImage) {
         ApiService apiService = ApiClient.getClient();
-        Call<UpdateResponse> call = apiService.updateUserProfile(userID, newUsername, newProfileImage);
+        Call<UpdateResponse> call = apiService.updateUserProfile(userID,null ,newProfileImage,null ,null);
 
         call.enqueue(new Callback<UpdateResponse>() {
             @Override
             public void onResponse(Call<UpdateResponse> call, Response<UpdateResponse> response) {
+                updateProfileProgress.setVisibility(View.GONE);
+
                 if (response.isSuccessful()) {
                     UpdateResponse apiResponse = response.body();
                     if (apiResponse != null && "OK".equals(apiResponse.getStatus())) {
                         User newUser = apiResponse.getData();
-                        Log.d("Profile", newUser.toString());
+                        Log.d("Profile", newUser.getProfileImage());
+
+                        // Lưu dữ liệu người dùng mới vào SharedPreferences
                         Gson gson = new GsonBuilder().setLenient().create();
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(Constant.USER_DATA, gson.toJson(newUser));
                         editor.apply();
                         user = newUser;
+                        Picasso.get().load(Uri.parse(newUser.getProfileImage())).into(profileImage);
 
                     } else {
-                        updateProfileProgress.setVisibility(View.GONE);
-                        Utils.showDialog(Gravity.CENTER, "SOMETHING WENT WRONG", ProfileActivity.this);
-                        // Xử lý khi cập nhật không thành công
-                        // Ví dụ: Hiển thị thông báo lỗi
+                        String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Something went wrong";
+                        Utils.showDialog(Gravity.CENTER, errorMessage, ProfileActivity.this);
+                        Log.w("api", errorMessage);
                     }
                 } else {
-                    updateProfileProgress.setVisibility(View.GONE);
-                    Utils.showDialog(Gravity.CENTER, "SOMETHING WENT WRONG", ProfileActivity.this);
-                    // Xử lý khi có lỗi kết nối đến máy chủ
-                    // Ví dụ: Hiển thị thông báo lỗi kết nối
+                    // Hiển thị thông báo nếu có lỗi từ Response
+                    Utils.showDialog(Gravity.CENTER, "Something went wrong", ProfileActivity.this);
                 }
             }
 
             @Override
             public void onFailure(Call<UpdateResponse> call, Throwable t) {
-                // Xử lý khi có lỗi trong quá trình thực hiện request
-                // Ví dụ: Hiển thị thông báo lỗi
+                updateProfileProgress.setVisibility(View.GONE);
+                Utils.showDialog(Gravity.CENTER, "Network error", ProfileActivity.this);
             }
         });
     }
@@ -217,9 +220,7 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
-
-
-
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

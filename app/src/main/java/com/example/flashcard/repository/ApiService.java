@@ -22,7 +22,9 @@ public interface ApiService {
     @POST("updateUser.php")
     Call<UpdateResponse> updateUserProfile(
             @Field("userID") int userID,
-            @Field("newUsername") String newUsername,
-            @Field("newProfileImage") String newProfileImage
+            @Field("newEmail") String newEmail,
+            @Field("newProfileImage") String newProfileImage,
+            @Field("newPassword") String newPassword,
+            @Field("newAge") Integer newAge
     );
 }

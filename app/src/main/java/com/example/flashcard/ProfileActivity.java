@@ -99,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
             public void onClick(View v) {
                 String username = profileUser.getText().toString();
                 if(username.isEmpty()){
-                    Utils.showSnackBar(v, "Please fill all your information");
+                    Utils.showSnackBar(v, "Please fill all your information.");
                     return;
                 }
 
@@ -134,7 +134,41 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
+        ApiService apiService = ApiClient.getClient();
+        Call<UpdateResponse> call = apiService.updateUserProfile(user.getId(),null ,null,newPassword ,null);
+        call.enqueue(new Callback<UpdateResponse>() {
+            @Override
+            public void onResponse(Call<UpdateResponse> call, Response<UpdateResponse> response) {
+                updateProfileProgress.setVisibility(View.GONE);
 
+                if (response.isSuccessful()) {
+                    UpdateResponse apiResponse = response.body();
+                    if (apiResponse != null && "OK".equals(apiResponse.getStatus())) {
+                        User newUser = apiResponse.getData();
+                        Log.d("Profile", newUser.getProfileImage());
+
+                        Gson gson = new GsonBuilder().setLenient().create();
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(Constant.USER_DATA, gson.toJson(newUser));
+                        editor.apply();
+                        user = newUser;
+                        Picasso.get().load(Uri.parse(newUser.getProfileImage())).into(profileImage);
+
+                    } else {
+                        String errorMessage = apiResponse != null ? apiResponse.getMessage() : "Something went wrong";
+                        Utils.showDialog(Gravity.CENTER, errorMessage, ProfileActivity.this);
+                        Log.w("api", errorMessage);
+                    }
+                } else {
+                    Utils.showDialog(Gravity.CENTER, "Something went wrong", ProfileActivity.this);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdateResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void updateUserProfile(int userID, String newProfileImage) {

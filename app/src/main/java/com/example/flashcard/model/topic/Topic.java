@@ -10,16 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Topic implements Parcelable {
-    @SerializedName("_id")
+    @SerializedName("id")
     private int id;
+    @SerializedName("topicName")
+
     private String topicName;
+    @SerializedName("description")
+
     private String description;
     private int vocabularyCount;
-    private boolean isPublic;
+    @SerializedName("isPublic")
+
+    private int isPublic;
     private ArrayList<String> userId;
     private List<String> learningStatisticsId;
     private List<String> topicInFolderId;
     private List<String> vocabularyId;
+    @SerializedName("ownerID")
     private int ownerId;
     private boolean chosen;
 
@@ -55,11 +62,11 @@ public class Topic implements Parcelable {
         this.vocabularyCount = vocabularyCount;
     }
 
-    public boolean isPublic() {
+    public int isPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setPublic(int aPublic) {
         isPublic = aPublic;
     }
 
@@ -112,7 +119,7 @@ public class Topic implements Parcelable {
     }
 
     public Topic(int id, String topicName, int vocabularyCount,
-                 boolean isPublic, String description,
+                 int isPublic, String description,
                  ArrayList<String> userId, List<String> learningStatisticsId,
                  List<String> topicInFolderId, List<String> vocabularyId,
                  int ownerId, boolean chosen) {
@@ -134,7 +141,7 @@ public class Topic implements Parcelable {
         topicName = in.readString();
         description = in.readString();
         vocabularyCount = in.readInt();
-        isPublic = in.readByte() != 0;
+        isPublic = in.readByte();
         userId = in.createStringArrayList();
         learningStatisticsId = in.createStringArrayList();
         topicInFolderId = in.createStringArrayList();
@@ -149,7 +156,7 @@ public class Topic implements Parcelable {
         dest.writeString(topicName);
         dest.writeString(description);
         dest.writeInt(vocabularyCount);
-        dest.writeByte((byte) (isPublic ? 1 : 0));
+        dest.writeByte((byte) (isPublic));
         dest.writeStringList(userId);
         dest.writeStringList(learningStatisticsId);
         dest.writeStringList(topicInFolderId);

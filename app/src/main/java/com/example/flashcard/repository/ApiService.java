@@ -35,7 +35,7 @@ public interface ApiService {
     @POST("createTopic.php")
     Call<TopicResponse> CreateTopic(
             @Field("topicName") String topicName,
-            @Field("description ") String description,
+            @Field("description") String description,
             @Field("isPublic") int isPublic,
             @Field("ownerID") int ownerID
     );
@@ -44,14 +44,14 @@ public interface ApiService {
     @POST("insertTopicDetail.php")
     Call<TopicDetailResponse> insertTopicDetail(
             @Field("topicID") int topicID,
-            @Field("userID ") int userID
+            @Field("userID") int userID
     );
 
     @FormUrlEncoded
     @POST("createVocabulary.php")
     Call<VocabuResponse> createVocabulary(
             @Field("vocabulary") String vocabulary,
-            @Field("meaning ") String meaning,
-            @Field("topicID ") String topicID
+            @Field("meaning") String meaning,
+            @Field("topicID") int topicID
     );
 }

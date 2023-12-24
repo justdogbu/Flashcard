@@ -7,28 +7,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.flashcard.adapter.VocabularyAdapter;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
-import com.example.flashcard.model.user.UpdateResponse;
 import com.example.flashcard.model.user.User;
 import com.example.flashcard.model.vocabulary.VocabuResponse;
+import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
@@ -36,11 +30,7 @@ import com.example.flashcard.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,31 +44,36 @@ public class CreateTopicActivity extends AppCompatActivity {
     private User user;
     private Topic topic;
     private ImageView saveBtn;
+    private EditText edtTitleName;
+    private EditText edtDescription;
+    private VocabularyAdapter adapter;
+    private SwitchMaterial publicTopicSwitch;
+    private ProgressBar progressBar;
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_topic);
+        sharedPreferences = this.getSharedPreferences(Constant.SHARE_PREF, MODE_PRIVATE);
+        String userDataJson = sharedPreferences.getString(Constant.USER_DATA, null);
+        user = new Gson().fromJson(userDataJson, User.class);
 
-        getUser();
-
-        EditText edtTitleName = findViewById(R.id.edtTitleName);
-        EditText topicDescriptionEdt = findViewById(R.id.topicDescriptionEdt);
-        SwitchMaterial publicTopicSwitch = findViewById(R.id.publicTopicSwitch);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        ImageView backButton = findViewById(R.id.backButton);
-        TextView titleText = findViewById(R.id.titleText);
-        ImageView topicSetting = findViewById(R.id.topic_setting);
-        ImageView menuItem2 = findViewById(R.id.topic_check);
         saveBtn = findViewById(R.id.topic_check);
 
+        edtTitleName = findViewById(R.id.edtTitleName);
+
         recyclerView = findViewById(R.id.vocabularyListView);
+        edtDescription = findViewById(R.id.topicDescriptionEdt);
+        publicTopicSwitch = findViewById(R.id.publicTopicSwitch);
+        progressBar = findViewById(R.id.progressLoading);
         fab = findViewById(R.id.fab);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        VocabularyAdapter adapter = new VocabularyAdapter();
+        adapter = new VocabularyAdapter();
         recyclerView.setAdapter(adapter);
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
         recyclerView.addItemDecoration(new ItemDecoration(this, spacingInPixels));
@@ -91,34 +86,37 @@ public class CreateTopicActivity extends AppCompatActivity {
             }
         });
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-                int swichPublic = 0;
-                if(publicTopicSwitch.isChecked() == true){
-                    swichPublic =1;
-                }
-                CreateTopic(edtTitleName.getText().toString(), topicDescriptionEdt.getText().toString(), swichPublic, user.getId());
-                CreateTopicDetail(topic.getId(), user.getId());
-
-            }
-        });
-
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i = 0; i < adapter.getItemCount(); i++){
-                    Log.d("Test new item", adapter.vocabs.get(i).getVocabulary() + " and " + adapter.vocabs.get(i).getMeaning());
+                progressBar.setVisibility(View.VISIBLE);
+
+                String title = edtTitleName.getText().toString();
+                String desc = edtDescription.getText().toString();
+                int isPublic = publicTopicSwitch.isChecked() ? 1 : 0;
+                int itemCount = adapter.getItemCount();
+
+                if(title.isEmpty() || desc.isEmpty() || itemCount < 1){
+                    progressBar.setVisibility(View.GONE);
+                    Utils.showDialog(Gravity.CENTER, "Please fill all your information", CreateTopicActivity.this );
                 }
-//                for(int i = 0; i < adapter.getItemCount() - 1; i++){
-//                    Log.d("Create topic", adapter.topics.get(i).first + " + " + adapter.topics.get(i).second );
-//                }
+                else{
+                    for(Vocabulary vocab : adapter.vocabs){
+                        if(vocab.getVocabulary().isEmpty() || vocab.getMeaning().isEmpty()){
+                            Log.d("Create topic activity", vocab.getVocabulary() + " and " + vocab.getMeaning());
+                            progressBar.setVisibility(View.GONE);
+                            Utils.showDialog(Gravity.CENTER, "Please fill all your vocabularies and meanings", CreateTopicActivity.this );
+                            return;
+                        }
+                    }
+                    CreateTopic(title, desc, isPublic, user.getId());
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         });
     }
 
-    private  void CreateTopic(String topicName, String description, int isPublic, int ownerID){
+    private void CreateTopic(String topicName, String description, int isPublic, int ownerID){
         ApiService apiService = ApiClient.getClient();
         Call<TopicResponse> call = apiService.CreateTopic(topicName, description, isPublic, ownerID);
         call.enqueue(new Callback<TopicResponse>() {
@@ -128,18 +126,31 @@ public class CreateTopicActivity extends AppCompatActivity {
                     TopicResponse topicResponse = response.body();
                     if (topicResponse != null && "OK".equals(topicResponse.getStatus())) {
                         Topic newTopic = topicResponse.getData();
-                        topic = newTopic;
+                        for(Vocabulary vocabulary : adapter.vocabs){
+                            CreateVocabulary(vocabulary.getVocabulary(), vocabulary.getMeaning(), newTopic.getId());
+                        }
+                        Utils.showDialog(Gravity.CENTER, "Topic created", CreateTopicActivity.this );
+                        clearTopic();
                     } else {
+                        Log.d("test create", topicResponse.toString() + " " + topicResponse.getStatus() + " " + topicResponse.getMessage());
 
+                        progressBar.setVisibility(View.GONE);
+                        Utils.showDialog(Gravity.CENTER, "The topic already exist", CreateTopicActivity.this );
                     }
                 } else {
-
+                    Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );
+                    Log.e("CreateTopicActivity", "API call failed at Create topic. Error: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<TopicResponse> call, Throwable t) {
-
+                Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );
+                Log.e("CreateTopicActivity", "API call failed at Create topic. Error: " + t);
             }
         });
     }
@@ -161,7 +172,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         });
     }
 
-    private  void CreateVocabu(String vocabulary, String meaning, String topicID){
+    private  void CreateVocabulary(String vocabulary, String meaning, int topicID){
         ApiService apiService = ApiClient.getClient();
         Call<VocabuResponse> call = apiService.createVocabulary(vocabulary, meaning, topicID);
 
@@ -171,26 +182,34 @@ public class CreateTopicActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     VocabuResponse vocabuResponse = response.body();
                     if (vocabuResponse != null && "OK".equals(vocabuResponse.getStatus())) {
-
-
+                        Log.d("CreateTopicActivity", "Create success");
                     } else {
-
+                        Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        Utils.showDialog(Gravity.CENTER, "Topic does not exist", CreateTopicActivity.this );
+                        Log.e("CreateTopicActivity", "API call failed at create vocabulary. Error: " + response.message());
                     }
                 } else {
-
+                    Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );
+                    Log.e("CreateTopicActivity", "API call failed at create vocabulary. Error: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<VocabuResponse> call, Throwable t) {
-
+                Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );
+                Log.e("CreateTopicActivity", "API call failed. Error: " + t);
             }
         });
     }
-    private void getUser() {
-        user = getIntent().getParcelableExtra(Constant.USER_DATA);
-        if (user == null) {
-            finish();
-        }
+    private void clearTopic(){
+        edtTitleName.setText("");
+        edtDescription.setText("");
+        adapter.vocabs.clear();
+        adapter.notifyDataSetChanged();
     }
 }

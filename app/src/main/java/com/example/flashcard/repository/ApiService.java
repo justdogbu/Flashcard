@@ -1,5 +1,6 @@
 package com.example.flashcard.repository;
 
+import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.user.LoginResponse;
@@ -54,4 +55,13 @@ public interface ApiService {
             @Field("meaning") String meaning,
             @Field("topicID") int topicID
     );
+
+    @FormUrlEncoded
+    @POST("createFolder.php")
+    Call<FolderResponse> createFolder(
+            @Field("userID") int userID,
+            @Field("folderName") String folderName,
+            @Field("folderDescription") String folderDescription
+    );
+    
 }

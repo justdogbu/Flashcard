@@ -29,7 +29,7 @@ public class HomeDataViewModel extends ViewModel {
     }
 
     public void setTopicsList(List<Topic> topicsList) {
-        this.topicsList.setValue(topicsList);
+        this.topicsList.postValue(topicsList);
     }
 
     public LiveData<List<Folder>> getFolderList() {
@@ -37,7 +37,7 @@ public class HomeDataViewModel extends ViewModel {
     }
 
     public void setFolderList(List<Folder> folderList) {
-        this.folderList.setValue(folderList);
+        this.folderList.postValue(folderList);
     }
 
     public LiveData<List<Topic>> getPublicTopicsList() {

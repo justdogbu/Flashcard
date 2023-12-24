@@ -44,6 +44,7 @@ public class CreateTopicActivity extends AppCompatActivity {
     private User user;
     private Topic topic;
     private ImageView saveBtn;
+    private ImageView backBtn;
     private EditText edtTitleName;
     private EditText edtDescription;
     private VocabularyAdapter adapter;
@@ -61,6 +62,7 @@ public class CreateTopicActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         saveBtn = findViewById(R.id.topic_check);
+        backBtn = findViewById(R.id.backButton);
 
         edtTitleName = findViewById(R.id.edtTitleName);
 
@@ -83,6 +85,13 @@ public class CreateTopicActivity extends AppCompatActivity {
             public void onClick(View view) {
                 adapter.addFlashcard();
                 Log.d("Create topic", adapter.getItemCount() + "");
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -125,6 +134,7 @@ public class CreateTopicActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     TopicResponse topicResponse = response.body();
                     if (topicResponse != null && "OK".equals(topicResponse.getStatus())) {
+                        CreateTopicDetail(topicResponse.getData().getId(), ownerID);
                         Topic newTopic = topicResponse.getData();
                         for(Vocabulary vocabulary : adapter.vocabs){
                             CreateVocabulary(vocabulary.getVocabulary(), vocabulary.getMeaning(), newTopic.getId());

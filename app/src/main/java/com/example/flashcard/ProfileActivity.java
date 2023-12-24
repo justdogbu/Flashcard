@@ -42,7 +42,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity implements ResetPasswordConfirmListener {
-    private Bitmap bitmap;
     private SharedPreferences sharedPref;
     private User user;
     private ShapeableImageView profileImage;
@@ -53,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
     private ProgressBar updateProfileProgress;
     private LinearLayout profileContent;
     private ImageButton returnBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +83,6 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                 pickingImage.setType("image/*");
                 pickingImage.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
                 startActivityForResult(pickingImage, Constant.PICK_IMAGE_INTENT);
-//                Intent intent = new Intent();
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(intent, Constant.PICK_IMAGE_REQUEST);
             }
         });
 
@@ -111,37 +107,6 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                 updateUserProfile(user.getId(), convertBitmapToString());
             }
         });
-        /*saveProfileBtn.setOnClickListener(v -> {
-            if (username.isEmpty() || almaMater.isEmpty()) {
-                Utils.showSnackBar(binding.getRoot(), getString(R.string.please_fill));
-                return;
-            }
-            binding.updateProfileProgress.setVisibility(View.VISIBLE);
-            binding.profileContent.setVisibility(View.INVISIBLE);
-            String token = sharedPref.getString(getString(R.string.token_key), null);
-            dataRepo.updateUser(username, almaMater, user.getId(), token)
-                    .thenAcceptAsync(it -> {
-                        with(sharedPref.edit()) {
-                            String newUserJson = new Gson().toJson(it.getUser());
-                            putString(getString(R.string.user_data_key), newUserJson);
-                            apply();
-                            user = it.getUser();
-                        }
-                        runOnUiThread(() -> {
-                            binding.profileContent.setVisibility(View.VISIBLE);
-                            binding.updateProfileProgress.setVisibility(View.GONE);
-                            Utils.showDialog(Gravity.CENTER, it.getMessage(), this);
-                        });
-                    })
-                    .exceptionally(e -> {
-                        runOnUiThread(() -> {
-                            binding.profileContent.setVisibility(View.VISIBLE);
-                            binding.updateProfileProgress.setVisibility(View.GONE);
-                            Utils.showDialog(Gravity.CENTER, e.getMessage(), this);
-                        });
-                        return null;
-                    });
-        });*/
 
         returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +152,6 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                         User newUser = apiResponse.getData();
                         Log.d("Profile", newUser.getProfileImage());
 
-                        // Lưu dữ liệu người dùng mới vào SharedPreferences
                         Gson gson = new GsonBuilder().setLenient().create();
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString(Constant.USER_DATA, gson.toJson(newUser));
@@ -201,7 +165,6 @@ public class ProfileActivity extends AppCompatActivity implements ResetPasswordC
                         Log.w("api", errorMessage);
                     }
                 } else {
-                    // Hiển thị thông báo nếu có lỗi từ Response
                     Utils.showDialog(Gravity.CENTER, "Something went wrong", ProfileActivity.this);
                 }
             }

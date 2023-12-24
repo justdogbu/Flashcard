@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -20,12 +22,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CreateTopicActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
-    //private ArrayList<Voca>
+
+    private ImageView saveBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         TextView titleText = findViewById(R.id.titleText);
         ImageView topicSetting = findViewById(R.id.topic_setting);
         ImageView menuItem2 = findViewById(R.id.topic_check);
-
+        saveBtn = findViewById(R.id.topic_check);
 
         recyclerView = findViewById(R.id.vocabularyListView);
         fab = findViewById(R.id.fab);
@@ -53,6 +57,7 @@ public class CreateTopicActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 adapter.addFlashcard();
+                Log.d("Create topic", adapter.getItemCount() + "");
             }
         });
 
@@ -63,44 +68,15 @@ public class CreateTopicActivity extends AppCompatActivity {
             }
         });
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.backBtn:
-                        finish();
-                        break;
-                    case R.id.topic_setting:
-                        PopupMenu popupMenu = new PopupMenu(CreateTopicActivity.this, topicSetting);
-                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                switch (item.getItemId()) {
-                                    case R.id.addVocabularyItem:
-                                        Log.d("Test","add vocab");
-//                                        vocabularyList.add(vocabularyList.size(),
-//                                                new Vocabulary(null, "", "", "", "", null, new ArrayList<>(), new ArrayList<>()));
-//                                        vocabularyAdapter.notifyItemInserted(vocabularyList.size() - 1);
-//                                        binding.vocabularyListView.scrollToPosition(vocabularyList.size() - 1);
-                                        return true;
-                                    case R.id.removeAllVocabularyItem:
-                                        Log.d("Test", "remove all");
-//                                        vocabularyList.clear();
-//                                        vocabularyAdapter.notifyDataSetChanged();
-                                        return true;
-                                    default:
-                                        return false;
-                                }
-                            }
-                        });
-                        popupMenu.inflate(R.menu.add_topic_popup);
-                        popupMenu.show();
-
-                        break;
-                    default:
-                        return false;
+            public void onClick(View v) {
+                for(int i = 0; i < adapter.getItemCount(); i++){
+                    Log.d("Test new item", adapter.vocabs.get(i).getVocabulary() + " and " + adapter.vocabs.get(i).getMeaning());
                 }
-                return false;
+//                for(int i = 0; i < adapter.getItemCount() - 1; i++){
+//                    Log.d("Create topic", adapter.topics.get(i).first + " + " + adapter.topics.get(i).second );
+//                }
             }
         });
     }

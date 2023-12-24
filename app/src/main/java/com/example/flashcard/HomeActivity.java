@@ -208,6 +208,8 @@ public class HomeActivity extends AppCompatActivity {
         addTopicBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CreateTopicActivity.class);
+                startActivity(intent);
                 dialog.dismiss();
                 Toast.makeText(HomeActivity.this,"Create a topic is clicked",Toast.LENGTH_SHORT).show();
             }

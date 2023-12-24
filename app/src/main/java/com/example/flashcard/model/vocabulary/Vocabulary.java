@@ -3,6 +3,7 @@ package com.example.flashcard.model.vocabulary;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Vocabulary implements Parcelable {
@@ -18,17 +19,44 @@ public class Vocabulary implements Parcelable {
             int id,
             String vocabulary,
             String meaning,
-            String topicId,
             List<String> vocabularyStatisticId,
-            List<String> bookmarkVocabularyId,
-            boolean isFront) {
+            List<String> bookmarkVocabularyId) {
         this.id = id;
         this.vocabulary = vocabulary;
         this.meaning = meaning;
-        this.topicId = topicId;
+        this.topicId = null;
         this.vocabularyStatisticId = vocabularyStatisticId;
         this.bookmarkVocabularyId = bookmarkVocabularyId;
-        this.isFront = isFront;
+        this.isFront = false;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setVocabulary(String vocabulary) {
+        this.vocabulary = vocabulary;
+    }
+
+    public void setMeaning(String meaning) {
+        this.meaning = meaning;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
+    }
+
+    public void setVocabularyStatisticId(List<String> vocabularyStatisticId) {
+        this.vocabularyStatisticId = vocabularyStatisticId;
+    }
+
+    public void setBookmarkVocabularyId(List<String> bookmarkVocabularyId) {
+        this.bookmarkVocabularyId = bookmarkVocabularyId;
+    }
+
+    public void setFront(boolean front) {
+        isFront = front;
     }
 
     protected Vocabulary(Parcel in) {

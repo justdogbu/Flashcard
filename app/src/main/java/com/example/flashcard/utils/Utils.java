@@ -37,12 +37,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class Utils {
-    private static DownloadConditions downloadConditions = new DownloadConditions.Builder().requireWifi().build();
-    private static TranslatorOptions engToVietOptions = new TranslatorOptions.Builder()
+    public static DownloadConditions downloadConditions = new DownloadConditions.Builder().requireWifi().build();
+    public static TranslatorOptions engToVietOptions = new TranslatorOptions.Builder()
             .setSourceLanguage(TranslateLanguage.ENGLISH)
             .setTargetLanguage(TranslateLanguage.VIETNAMESE)
             .build();
-    private static final Translator engToVietTranslator = Translation.getClient(engToVietOptions);
+    public static final Translator engToVietTranslator = Translation.getClient(engToVietOptions);
 
     public static void showSnackBar(View view, String message) {
         Snackbar snackBar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);

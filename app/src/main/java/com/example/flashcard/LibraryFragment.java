@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +17,23 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.flashcard.adapter.LibraryScreenTabAdapter;
+import com.example.flashcard.model.folder.Folder;
+import com.example.flashcard.model.folder.FolderResponse;
+import com.example.flashcard.model.folder.FoldersFormUserResponse;
+import com.example.flashcard.repository.ApiClient;
+import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.OnDialogConfirmListener;
 import com.example.flashcard.utils.Utils;
+import com.example.flashcard.viewmodel.HomeDataViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +46,7 @@ public class LibraryFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private HomeDataViewModel homeDataViewModel;
     private LibraryScreenTabAdapter libraryScreenTabAdapter;
     private TabLayout tabLayout;
     private OnDialogConfirmListener onDialogConfirmListener;
@@ -78,6 +94,7 @@ public class LibraryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_library, container, false);
+        homeDataViewModel = new ViewModelProvider(requireActivity()).get(HomeDataViewModel.class);
         addBtn = view.findViewById(R.id.addBtn);
         pagesLayoutList = view.findViewById(R.id.pagesLayoutList);
         tabLayout = view.findViewById(R.id.tabLayoutList);
@@ -153,7 +170,65 @@ public class LibraryFragment extends Fragment {
                     Utils.showCreateFolderDialog(
                             Gravity.CENTER,
                             requireActivity(),
-                            onDialogConfirmListener
+                            new OnDialogConfirmListener() {
+                                @Override
+                                public void onCreateFolderDialogConfirm(String folderName, String description) {
+                                    ApiService apiService = ApiClient.getClient();
+                                    Call<FolderResponse> call = apiService.createFolder(homeDataViewModel.getUser().getValue().getId(), folderName, description);
+                                    call.enqueue(new Callback<FolderResponse>() {
+
+                                        @Override
+                                        public void onResponse(Call<FolderResponse> call, Response<FolderResponse> response) {
+                                            if (response.isSuccessful()) {
+                                                FolderResponse folderResponse = response.body();
+                                                if (folderResponse != null && "OK".equals(folderResponse.getStatus())) {
+                                                    Utils.showDialog(Gravity.CENTER, "Folder created", requireActivity());
+                                                    Call<FoldersFormUserResponse> callFolder = apiService.getUserFolder(homeDataViewModel.getUser().getValue().getId());
+                                                    callFolder.enqueue(new Callback<FoldersFormUserResponse>() {
+                                                        @Override
+                                                        public void onResponse(Call<FoldersFormUserResponse> call, Response<FoldersFormUserResponse> response) {
+                                                            FoldersFormUserResponse foldersFormUserResponse = response.body();
+                                                            List<Folder> listFolder = new ArrayList<>();
+                                                            if (foldersFormUserResponse != null && "OK".equals(foldersFormUserResponse.getStatus())) {
+                                                                listFolder = foldersFormUserResponse.getData();
+                                                                homeDataViewModel.setFolderList(listFolder);
+                                                            } else {
+                                                                Log.d("Fetch data", "NOT OK");
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(Call<FoldersFormUserResponse> call, Throwable t) {
+                                                            Log.d("Fetch data", "ERROR " + t);
+
+                                                        }
+                                                    });
+                                                } else {
+                                                    Utils.showDialog(Gravity.CENTER, "Failed to create folder! Try again!", requireActivity());
+                                                    Log.e("HomeActivity", "API call failed at home activity. Error: " + response.message());
+                                                }
+                                            } else {
+                                                Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", requireActivity());
+                                                Log.e("HomeActivity", "API call failed at home activity. Error: " + response.message());
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<FolderResponse> call, Throwable t) {
+                                            Utils.showDialog(Gravity.CENTER, "Something went wrong", requireActivity());
+                                        }
+                                    });                    }
+
+                                @Override
+                                public void onAddTopicToFolderDialogConfirm() {
+
+                                }
+
+                                @Override
+                                public void onDeleteFolderDialogConfirm() {
+
+                                }
+                            }
                     );
                 });
                 break;

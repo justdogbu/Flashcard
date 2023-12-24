@@ -1,12 +1,24 @@
 package com.example.flashcard;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+
+import com.example.flashcard.adapter.LibraryScreenTabAdapter;
+import com.example.flashcard.utils.OnDialogConfirmListener;
+import com.example.flashcard.utils.Utils;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +31,12 @@ public class LibraryFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private LibraryScreenTabAdapter libraryScreenTabAdapter;
+    private TabLayout tabLayout;
+    private OnDialogConfirmListener onDialogConfirmListener;
+    private ImageButton addBtn;
+    private ViewPager2 pagesLayoutList;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -59,6 +77,86 @@ public class LibraryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_library, container, false);
+        View view = inflater.inflate(R.layout.fragment_library, container, false);
+        addBtn = view.findViewById(R.id.addBtn);
+        pagesLayoutList = view.findViewById(R.id.pagesLayoutList);
+        tabLayout = view.findViewById(R.id.tabLayoutList);
+        libraryScreenTabAdapter = new LibraryScreenTabAdapter(requireActivity());
+        pagesLayoutList.setAdapter(libraryScreenTabAdapter);
+        new TabLayoutMediator(tabLayout, pagesLayoutList, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("TOPIC");
+                    break;
+                case 1:
+                    tab.setText("FOLDER");
+                    break;
+            }
+        }).attach();
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                handleTabSelection(tab);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                handleTabSelection(tab);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                handleTabSelection(tab);
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnDialogConfirmListener) {
+            onDialogConfirmListener = (OnDialogConfirmListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnDialogConfirmListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onDialogConfirmListener = null;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            Bundle args = getArguments();
+            if (args != null) {
+                int tabIndex = args.getInt("tabIndex");
+                pagesLayoutList.setCurrentItem(tabIndex, true);
+            }
+        }
+    }
+
+    private void handleTabSelection(TabLayout.Tab tab) {
+        switch (tab.getPosition()) {
+            case 0:
+                addBtn.setOnClickListener(v -> {
+                    Intent addTopicIntent = new Intent(requireActivity(), CreateTopicActivity.class);
+                    startActivity(addTopicIntent);
+                });
+                break;
+            case 1:
+                addBtn.setOnClickListener(v -> {
+                    Utils.showCreateFolderDialog(
+                            Gravity.CENTER,
+                            requireActivity(),
+                            onDialogConfirmListener
+                    );
+                });
+                break;
+        }
     }
 }

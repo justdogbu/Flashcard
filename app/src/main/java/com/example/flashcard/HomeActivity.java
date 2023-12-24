@@ -22,6 +22,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,8 +31,17 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.flashcard.model.folder.FolderResponse;
+import com.example.flashcard.model.topic.TopicDetailResponse;
+import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.user.User;
+import com.example.flashcard.model.vocabulary.VocabuResponse;
+import com.example.flashcard.repository.ApiClient;
+import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
+import com.example.flashcard.utils.OnBottomNavigationChangeListener;
+import com.example.flashcard.utils.OnDialogConfirmListener;
+import com.example.flashcard.utils.OnDrawerNavigationPressedListener;
 import com.example.flashcard.utils.Utils;
 import com.example.flashcard.viewmodel.HomeDataViewModel;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -41,7 +51,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
-public class HomeActivity extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class HomeActivity extends AppCompatActivity implements OnBottomNavigationChangeListener, OnDrawerNavigationPressedListener, OnDialogConfirmListener {
 
     FloatingActionButton fab;
     DrawerLayout drawerLayout;
@@ -218,6 +232,50 @@ public class HomeActivity extends AppCompatActivity {
         addFolderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.showCreateFolderDialog(Gravity.CENTER, v.getContext(), new OnDialogConfirmListener() {
+                    @Override
+                    public void onCreateFolderDialogConfirm(String folderName, String description) {
+                        ApiService apiService = ApiClient.getClient();
+                        Call<FolderResponse> call = apiService.createFolder(userViewModel.getUser().getValue().getId(), folderName, description);
+
+                        call.enqueue(new Callback<FolderResponse>() {
+
+                            @Override
+                            public void onResponse(Call<FolderResponse> call, Response<FolderResponse> response) {
+                                if (response.isSuccessful()) {
+                                    FolderResponse folderResponse = response.body();
+                                    if (folderResponse != null && "OK".equals(folderResponse.getStatus())) {
+                                        Log.d("CreateTopicActivity", "Create success");
+                                        Utils.showDialog(Gravity.CENTER, "Folder created", HomeActivity.this );
+                                    } else {
+                                        Toast.makeText(HomeActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                        Utils.showDialog(Gravity.CENTER, "Failed to create folder! Try again!", HomeActivity.this );
+                                        Log.e("HomeActivity", "API call failed at home activity. Error: " + response.message());
+                                    }
+                                } else {
+                                    Toast.makeText(HomeActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                    Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", HomeActivity.this );
+                                    Log.e("HomeActivity", "API call failed at home activity. Error: " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<FolderResponse> call, Throwable t) {
+                                Utils.showDialog(Gravity.CENTER, "Something went wrong", HomeActivity.this );
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAddTopicToFolderDialogConfirm() {
+
+                    }
+
+                    @Override
+                    public void onDeleteFolderDialogConfirm() {
+
+                    }
+                });
                 dialog.dismiss();
                 Toast.makeText(HomeActivity.this,"Create a folder is Clicked",Toast.LENGTH_SHORT).show();
             }
@@ -238,6 +296,37 @@ public class HomeActivity extends AppCompatActivity {
         dialog.getWindow().setGravity(Gravity.BOTTOM);
 
     }
+
+    @Override
+    public void changeBottomNavigationItem(int itemIndex, int tabIndex) {
+
+    }
+
+    @Override
+    public void onCreateFolderDialogConfirm(String folderName, String description) {
+
+    }
+
+    @Override
+    public void onAddTopicToFolderDialogConfirm() {
+
+    }
+
+    @Override
+    public void onDeleteFolderDialogConfirm() {
+
+    }
+
+    @Override
+    public void openDrawerFromFragment() {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
 
     private class StartActivityForResult {
     }

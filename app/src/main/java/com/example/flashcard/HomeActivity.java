@@ -257,6 +257,7 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
                                     if (folderResponse != null && "OK".equals(folderResponse.getStatus())) {
                                         Log.d("CreateTopicActivity", "Create success");
                                         Utils.showDialog(Gravity.CENTER, "Folder created", HomeActivity.this );
+                                        fetchData();
                                     } else {
                                         Toast.makeText(HomeActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                         Utils.showDialog(Gravity.CENTER, "Failed to create folder! Try again!", HomeActivity.this );

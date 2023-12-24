@@ -31,7 +31,9 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.flashcard.model.folder.Folder;
 import com.example.flashcard.model.folder.FolderResponse;
+import com.example.flashcard.model.folder.FoldersFormUserResponse;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
@@ -307,6 +309,33 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
 
     @Override
     public void changeBottomNavigationItem(int itemIndex, int tabIndex) {
+        if (itemIndex == R.id.homeFragment) {
+            fragmentManager.beginTransaction().hide(recentFragment).show(homeFragment).commit();
+            recentFragment = homeFragment;
+            bottomNavigationView.setSelectedItemId(R.id.home);
+        } else if (itemIndex == R.id.profileFragment) {
+            fragmentManager.beginTransaction().hide(recentFragment).show(profileFragment).commit();
+            recentFragment = profileFragment;
+            bottomNavigationView.setSelectedItemId(R.id.profile);
+        } else if (itemIndex == R.id.libraryFragment) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("tabIndex", tabIndex);
+            libraryFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().hide(recentFragment).show(libraryFragment).commit();
+            recentFragment = libraryFragment;
+            bottomNavigationView.setSelectedItemId(R.id.library);
+        } else if (itemIndex == R.id.searchFragment) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("tabIndex", tabIndex);
+            searchFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().hide(recentFragment).show(searchFragment).commit();
+            recentFragment = searchFragment;
+            bottomNavigationView.setSelectedItemId(R.id.search);
+        } else {
+            fragmentManager.beginTransaction().hide(recentFragment).show(homeFragment).commit();
+            recentFragment = homeFragment;
+            bottomNavigationView.setSelectedItemId(R.id.home);
+        }
 
     }
 
@@ -358,8 +387,8 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
 
     private void fetchData() {
         ApiService apiService = ApiClient.getClient();
-        Call<TopicsFormUserResponse> call = apiService.getUserTopic(userViewModel.getUser().getValue().getId());
-        call.enqueue(new Callback<TopicsFormUserResponse>() {
+        Call<TopicsFormUserResponse> callTopics = apiService.getUserTopic(userViewModel.getUser().getValue().getId());
+        callTopics.enqueue(new Callback<TopicsFormUserResponse>() {
             @Override
             public void onResponse(Call<TopicsFormUserResponse> call, Response<TopicsFormUserResponse> response) {
                 TopicsFormUserResponse topicsFormUserResponse = response.body();
@@ -368,17 +397,9 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
                     for(Topics t: topicsFormUserResponse.getData()){
                         listTopic.addAll(t.getAdditionalInfo());
                     }
-
                     userViewModel.setTopicsList(listTopic);
-                    Log.d("test fectch data", listTopic.size() +  " ");
-
-                    //Log.d("Get topic list", userViewModel.getTopicsList().getValue().size() + " ");
-                    Log.d("Fetch data", "OK");
-
-                    //Log.d("HomeActivity", "fetch topic ok + " + userViewModel.getTopicsList().getValue().size());
                 } else {
                     Log.d("Fetch data", "NOT OK");
-
                 }
             }
 
@@ -388,38 +409,27 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
 
             }
         });
-//
-//
-//        dataRepository.getFolderByUser(userViewModel.getUser().getValue().getId(),
-//                        sharedPref.getString(getString(R.string.token_key), null))
-//                .thenAccept(new Consumer<List<Folder>>() {
-//                    @Override
-//                    public void accept(List<Folder> it) {
-//                        userViewModel.setFolderList(it);
-//                    }
-//                })
-//                .exceptionally(new Function<Throwable, Void>() {
-//                    @Override
-//                    public Void apply(Throwable e) {
-//                        Utils.showSnackBar(binding.getRoot(), e.getMessage());
-//                        return null;
-//                    }
-//                });
-//
-//        dataRepository.getPublicTopics(sharedPref.getString(getString(R.string.token_key), null))
-//                .thenAccept(new Consumer<List<PublicTopic>>() {
-//                    @Override
-//                    public void accept(List<PublicTopic> it) {
-//                        userViewModel.setPublicTopicsList(it);
-//                    }
-//                })
-//                .exceptionally(new Function<Throwable, Void>() {
-//                    @Override
-//                    public Void apply(Throwable e) {
-//                        Utils.showSnackBar(binding.getRoot(), e.getMessage());
-//                        return null;
-//                    }
-//                });
+
+        Call<FoldersFormUserResponse> callFolder = apiService.getUserFolder(userViewModel.getUser().getValue().getId());
+        callFolder.enqueue(new Callback<FoldersFormUserResponse>() {
+            @Override
+            public void onResponse(Call<FoldersFormUserResponse> call, Response<FoldersFormUserResponse> response) {
+                FoldersFormUserResponse foldersFormUserResponse = response.body();
+                List<Folder> listFolder = new ArrayList<>();
+                if (foldersFormUserResponse != null && "OK".equals(foldersFormUserResponse.getStatus())) {
+                    listFolder = foldersFormUserResponse.getData();
+                    userViewModel.setFolderList(listFolder);
+                } else {
+                    Log.d("Fetch data", "NOT OK");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FoldersFormUserResponse> call, Throwable t) {
+                Log.d("Fetch data", "ERROR " + t);
+
+            }
+        });
     }
 
     @Override

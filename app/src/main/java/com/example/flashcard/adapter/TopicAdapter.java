@@ -55,7 +55,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         });
         holder.topicNameTxt.setText(topic.getTopicName());
         holder.topicTermsCount.setText(topic.getVocabularyCount() + " Vocabulary");
-        //holder.topicOwnerNameTxt.setText(topic.getOwnerId().getUsername());
+        //holder.topicOwnerNameTxt.setText(topic.getOwnerId());
         //holder.learnerCount.setText(topic.getUserId().size() + " Learner");
         //Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
     }

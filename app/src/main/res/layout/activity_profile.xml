@@ -90,6 +90,7 @@
             android:fontFamily="@font/bevietnampro_bold"
             android:hint="User name"
             android:text="username"
+            android:enabled="false"
             android:textColor="@color/white"
             android:textColorHint="@color/secondary_text_color"
             android:textSize="20sp" />

@@ -18,6 +18,7 @@ public class Topic implements Parcelable {
     @SerializedName("description")
 
     private String description;
+    @SerializedName("vocabularyCount")
     private int vocabularyCount;
     @SerializedName("isPublic")
 

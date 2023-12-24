@@ -32,10 +32,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.flashcard.model.folder.FolderResponse;
+import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
+import com.example.flashcard.model.topic.Topics;
+import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.User;
 import com.example.flashcard.model.vocabulary.VocabuResponse;
+import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
@@ -50,6 +54,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -349,7 +357,69 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
     }
 
     private void fetchData() {
+        ApiService apiService = ApiClient.getClient();
+        Call<TopicsFormUserResponse> call = apiService.getUserTopic(userViewModel.getUser().getValue().getId());
+        call.enqueue(new Callback<TopicsFormUserResponse>() {
+            @Override
+            public void onResponse(Call<TopicsFormUserResponse> call, Response<TopicsFormUserResponse> response) {
+                TopicsFormUserResponse topicsFormUserResponse = response.body();
+                List<Topic> listTopic = new ArrayList<>();
+                if (topicsFormUserResponse != null && "OK".equals(topicsFormUserResponse.getStatus())) {
+                    for(Topics t: topicsFormUserResponse.getData()){
+                        listTopic.addAll(t.getAdditionalInfo());
+                    }
 
+                    userViewModel.setTopicsList(listTopic);
+                    Log.d("test fectch data", listTopic.size() +  " ");
+
+                    //Log.d("Get topic list", userViewModel.getTopicsList().getValue().size() + " ");
+                    Log.d("Fetch data", "OK");
+
+                    //Log.d("HomeActivity", "fetch topic ok + " + userViewModel.getTopicsList().getValue().size());
+                } else {
+                    Log.d("Fetch data", "NOT OK");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TopicsFormUserResponse> call, Throwable t) {
+                Log.d("Fetch data", "ERROR " + t);
+
+            }
+        });
+//
+//
+//        dataRepository.getFolderByUser(userViewModel.getUser().getValue().getId(),
+//                        sharedPref.getString(getString(R.string.token_key), null))
+//                .thenAccept(new Consumer<List<Folder>>() {
+//                    @Override
+//                    public void accept(List<Folder> it) {
+//                        userViewModel.setFolderList(it);
+//                    }
+//                })
+//                .exceptionally(new Function<Throwable, Void>() {
+//                    @Override
+//                    public Void apply(Throwable e) {
+//                        Utils.showSnackBar(binding.getRoot(), e.getMessage());
+//                        return null;
+//                    }
+//                });
+//
+//        dataRepository.getPublicTopics(sharedPref.getString(getString(R.string.token_key), null))
+//                .thenAccept(new Consumer<List<PublicTopic>>() {
+//                    @Override
+//                    public void accept(List<PublicTopic> it) {
+//                        userViewModel.setPublicTopicsList(it);
+//                    }
+//                })
+//                .exceptionally(new Function<Throwable, Void>() {
+//                    @Override
+//                    public Void apply(Throwable e) {
+//                        Utils.showSnackBar(binding.getRoot(), e.getMessage());
+//                        return null;
+//                    }
+//                });
     }
 
     @Override

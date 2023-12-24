@@ -46,7 +46,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
 
     @Override
     public void onBindViewHolder(TopicViewHolder holder, int position) {
-        Topic topic = topics.get(position);
+        Topic topic = topics.get(holder.getAdapterPosition());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +56,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         holder.topicNameTxt.setText(topic.getTopicName());
         holder.topicTermsCount.setText(topic.getVocabularyCount() + " Vocabulary");
         //holder.topicOwnerNameTxt.setText(topic.getOwnerId().getUsername());
-        holder.learnerCount.setText(topic.getUserId().size() + " Learner");
+        //holder.learnerCount.setText(topic.getUserId().size() + " Learner");
         //Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
     }
 

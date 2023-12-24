@@ -3,6 +3,7 @@ package com.example.flashcard.repository;
 import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
+import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.LoginResponse;
 import com.example.flashcard.model.user.RegisterResponse;
 import com.example.flashcard.model.user.UpdateResponse;
@@ -63,5 +64,10 @@ public interface ApiService {
             @Field("folderName") String folderName,
             @Field("folderDescription") String folderDescription
     );
-    
+
+    @FormUrlEncoded
+    @POST("get_topic_user.php")
+    Call<TopicsFormUserResponse> getUserTopic(
+            @Field("userID") int userID
+    );
 }

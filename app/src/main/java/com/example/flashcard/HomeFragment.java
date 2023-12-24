@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -96,6 +98,8 @@ public class HomeFragment extends Fragment implements CustomOnItemClickListener 
         seeAllFoldersBtn = view.findViewById(R.id.seeAllFoldersBtn);
         noTopicText = view.findViewById(R.id.noTopicText);
         noFolderText = view.findViewById(R.id.noFolderText);
+        topicRecyclerView = view.findViewById(R.id.topicRecyclerView);
+        folderRecyclerView = view.findViewById(R.id.folderRecyclerView);
         getUserVM();
         return view;
     }
@@ -139,7 +143,11 @@ public class HomeFragment extends Fragment implements CustomOnItemClickListener 
                 onBottomNavigationChangeListener.changeBottomNavigationItem(R.id.libraryFragment, 1));
 
         userViewModel.getTopicsList().observe(getViewLifecycleOwner(), topics -> {
-            if (topics.isEmpty()) {
+            if(topics == null){
+                topicRecyclerView.setVisibility(View.GONE);
+                noTopicText.setVisibility(View.VISIBLE);
+            }
+            else if (topics.isEmpty()) {
                 topicRecyclerView.setVisibility(View.GONE);
                 noTopicText.setVisibility(View.VISIBLE);
             } else {

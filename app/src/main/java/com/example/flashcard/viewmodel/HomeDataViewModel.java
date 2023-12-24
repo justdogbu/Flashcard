@@ -16,7 +16,7 @@ public class HomeDataViewModel extends ViewModel {
     private MutableLiveData<List<Folder>> folderList = new MutableLiveData<>();
     private MutableLiveData<List<Topic>> publicTopicsList = new MutableLiveData<>();
 
-    public LiveData<User> getUser() {
+    public MutableLiveData<User> getUser() {
         return user;
     }
 
@@ -24,7 +24,7 @@ public class HomeDataViewModel extends ViewModel {
         this.user.setValue(user);
     }
 
-    public LiveData<List<Topic>> getTopicsList() {
+    public MutableLiveData<List<Topic>> getTopicsList() {
         return topicsList;
     }
 
@@ -32,7 +32,7 @@ public class HomeDataViewModel extends ViewModel {
         this.topicsList.postValue(topicsList);
     }
 
-    public LiveData<List<Folder>> getFolderList() {
+    public MutableLiveData<List<Folder>> getFolderList() {
         return folderList;
     }
 
@@ -40,7 +40,7 @@ public class HomeDataViewModel extends ViewModel {
         this.folderList.postValue(folderList);
     }
 
-    public LiveData<List<Topic>> getPublicTopicsList() {
+    public MutableLiveData<List<Topic>> getPublicTopicsList() {
         return publicTopicsList;
     }
 

@@ -6,10 +6,12 @@ import com.example.flashcard.model.topic.PublicTopicResponse;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
+import com.example.flashcard.model.topic.UpdateTopicResponse;
 import com.example.flashcard.model.user.LoginResponse;
 import com.example.flashcard.model.user.RegisterResponse;
 import com.example.flashcard.model.user.UpdateResponse;
 import com.example.flashcard.model.user.UserFromTopicResponse;
+import com.example.flashcard.model.vocabulary.DeleteVocabularyResponse;
 import com.example.flashcard.model.vocabulary.VocabulariesFromTopicResponse;
 import com.example.flashcard.model.vocabulary.VocabularyResponse;
 
@@ -97,5 +99,21 @@ public interface ApiService {
     Call<PublicTopicResponse> getPublicTopic(
             @Field("userID") int userId
 
+    );
+
+    @FormUrlEncoded
+    @POST("updateTopic.php")
+    Call<UpdateTopicResponse> updateTopic(
+            @Field("topicID") int topicID,
+            @Field("topicName") String topicName,
+            @Field("description") String description,
+            @Field("isPublic") int isPublic,
+            @Field("isPublic") int ownerID
+    );
+
+    @FormUrlEncoded
+    @POST("deleteVocabulary.php")
+    Call<DeleteVocabularyResponse> deleteVocabulary(
+            @Field("topicID") int topicID
     );
 }

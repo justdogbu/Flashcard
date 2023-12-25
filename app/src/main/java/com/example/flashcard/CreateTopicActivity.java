@@ -20,7 +20,10 @@ import com.example.flashcard.adapter.VocabularyAdapter;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
+import com.example.flashcard.model.topic.UpdateTopicResponse;
 import com.example.flashcard.model.user.User;
+import com.example.flashcard.model.vocabulary.DeleteVocabularyResponse;
+import com.example.flashcard.model.vocabulary.VocabulariesFromTopicResponse;
 import com.example.flashcard.model.vocabulary.VocabularyResponse;
 import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
@@ -30,6 +33,9 @@ import com.example.flashcard.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,17 +76,11 @@ public class CreateTopicActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressLoading);
         fab = findViewById(R.id.fab);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        adapter = new VocabularyAdapter();
-        recyclerView.setAdapter(adapter);
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        recyclerView.addItemDecoration(new ItemDecoration(this, spacingInPixels));
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Create topic", adapter + "");
                 adapter.addFlashcard();
                 Log.d("Create topic", adapter.getItemCount() + "");
             }
@@ -93,16 +93,53 @@ public class CreateTopicActivity extends AppCompatActivity {
             }
         });
 
+        topic = getIntent().getParcelableExtra("topic");
+        if(topic != null){
+            edtTitleName.setText(topic.getTopicName());
+            edtDescription.setText(topic.getDescription());
+            publicTopicSwitch.setChecked(topic.isPublic() == 1 ? true : false);
+            ApiService apiService = ApiClient.getClient();
+            Call<VocabulariesFromTopicResponse> call = apiService.getVocabulariesFromTopic(topic.getId());
+            call.enqueue(new Callback<VocabulariesFromTopicResponse>() {
+                @Override
+                public void onResponse(Call<VocabulariesFromTopicResponse> call, Response<VocabulariesFromTopicResponse> response) {
+                    VocabulariesFromTopicResponse vocabulariesFromTopicResponse = response.body();
+                    List<Vocabulary> vocabularyList = vocabulariesFromTopicResponse.getData();
+                    if(vocabularyList != null){
+                        adapter = new VocabularyAdapter(vocabularyList);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(CreateTopicActivity.this, LinearLayoutManager.VERTICAL, false));
+                        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+                        recyclerView.addItemDecoration(new ItemDecoration(CreateTopicActivity.this, spacingInPixels));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<VocabulariesFromTopicResponse> call, Throwable t) {
+
+                }
+            });
+
+        }
+        else{
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+
+            adapter = new VocabularyAdapter(new ArrayList<>());
+            recyclerView.setAdapter(adapter);
+            int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+            recyclerView.addItemDecoration(new ItemDecoration(this, spacingInPixels));
+
+        }
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-
                 String title = edtTitleName.getText().toString();
                 String desc = edtDescription.getText().toString();
                 int isPublic = publicTopicSwitch.isChecked() ? 1 : 0;
                 int itemCount = adapter.getItemCount();
-
                 if(title.isEmpty() || desc.isEmpty() || itemCount < 1){
                     progressBar.setVisibility(View.GONE);
                     Utils.showDialog(Gravity.CENTER, "Please fill all your information", CreateTopicActivity.this );
@@ -116,7 +153,12 @@ public class CreateTopicActivity extends AppCompatActivity {
                             return;
                         }
                     }
-                    CreateTopic(title, desc, isPublic, user.getId());
+                    if(topic != null){
+                        UpdateTopic(topic.getId(), title, desc, isPublic, topic.getOwnerId());
+                    }
+                    else{
+                        CreateTopic(title, desc, isPublic, user.getId());
+                    }
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -214,6 +256,59 @@ public class CreateTopicActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void UpdateTopic(int topicID, String topicName, String description, int isPublic, int ownerID){
+        ApiService apiService = ApiClient.getClient();
+        Call<UpdateTopicResponse> call = apiService.updateTopic(topicID, topicName, description, isPublic, ownerID);
+        call.enqueue(new Callback<UpdateTopicResponse>() {
+            @Override
+            public void onResponse(Call<UpdateTopicResponse> call, Response<UpdateTopicResponse> response) {
+                if (response.isSuccessful()) {
+                    DeleteAllVocabulary(topicID);
+                } else{
+                    Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );
+                    Log.e("CreateTopicActivity", "API call failed at Create topic. Error: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdateTopicResponse> call, Throwable t) {
+                Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );
+                Log.e("CreateTopicActivity", "API call failed at Create topic. Error: " + t);
+            }
+        });
+    }
+
+    private  void DeleteAllVocabulary(int topicID){
+        ApiService apiService = ApiClient.getClient();
+        Call<DeleteVocabularyResponse> call = apiService.deleteVocabulary(topicID);
+
+        call.enqueue(new Callback<DeleteVocabularyResponse>() {
+            @Override
+            public void onResponse(Call<DeleteVocabularyResponse> call, Response<DeleteVocabularyResponse> response) {
+                if (response.isSuccessful()) {
+                    DeleteVocabularyResponse deleteVocabularyResponse = response.body();
+                    if (deleteVocabularyResponse != null && "OK".equals(deleteVocabularyResponse.getStatus())) {
+                        for(Vocabulary vocabulary : adapter.vocabs){
+                            CreateVocabulary(vocabulary.getVocabulary(), vocabulary.getMeaning(), topicID);
+                        }
+                        Utils.showDialog(Gravity.CENTER, "Topic updated", CreateTopicActivity.this );
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteVocabularyResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void clearTopic(){
         edtTitleName.setText("");
         edtDescription.setText("");

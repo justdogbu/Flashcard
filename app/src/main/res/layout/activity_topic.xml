@@ -99,6 +99,7 @@
                 android:fontFamily="@font/bevietnampro_bold"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:layout_marginTop="20dp"
                 android:layout_marginHorizontal="15dp"
                 android:id="@+id/topicDesc"
                 android:text="Mô tả"
@@ -187,19 +188,6 @@
                 android:fontFamily="@font/bevietnampro_bold"
                 android:layout_height="wrap_content"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:paddingHorizontal="15dp"
-                android:textColor="@color/white"
-                android:id="@+id/rankingBtn"
-                android:layout_marginTop="15dp"
-                app:backgroundTint="@null"
-                android:background="@drawable/ripple_login_btn"
-                android:layout_marginHorizontal="15dp"
-                android:text="RANKING"
-                android:fontFamily="@font/bevietnampro_bold"
-                android:layout_height="wrap_content"/>
-
             <LinearLayout
                 android:layout_marginHorizontal="15dp"
                 android:orientation="vertical"
@@ -207,153 +195,6 @@
                 android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/bevietnampro_bold"
-                    android:text="User Statistics"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_marginTop="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:textSize="16sp"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:fontFamily="@font/bevietnampro_bold"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:id="@+id/topicLearningCountTxt"
-                            android:text="Learned"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:fontFamily="@font/bevietnampro_bold"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:layout_marginTop="15dp"
-                            android:id="@+id/vocabulariesLearnedTxt"
-                            android:text="Learned"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                        <TextView
-                            android:fontFamily="@font/bevietnampro_bold"
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:id="@+id/timeLearnedTxt"
-                            android:layout_marginTop="15dp"
-                            android:text="Ranking"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <ProgressBar
-                            android:id="@+id/progressIndicator"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:indeterminateOnly="false"
-                            android:progress="20"
-                            android:progressDrawable="@drawable/feedback_progress_bar"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/progressTxt"
-                            android:textColor="@color/white"
-                            android:fontFamily="@font/bevietnampro_bold"
-                            android:textSize="16sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="20%"
-                            android:textAlignment="center"
-                            app:layout_constraintBottom_toBottomOf="@+id/progressIndicator"
-                            app:layout_constraintEnd_toEndOf="@+id/progressIndicator"
-                            app:layout_constraintStart_toStartOf="@+id/progressIndicator"
-                            app:layout_constraintTop_toTopOf="@+id/progressIndicator" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_marginVertical="15dp"
-                    android:id="@+id/learnedVocabularyTxt"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/bevietnampro_bold"
-                    android:text="Vocabulary Statistics"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-                <LinearLayout
-                    android:id="@+id/vocabularyStatisticLayout"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:textSize="16sp"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:id="@+id/proficientText"
-                            android:text="Proficient"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:layout_marginTop="15dp"
-                            android:id="@+id/learningText"
-                            android:text="Learning"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                        <TextView
-                            android:textColor="@color/white"
-                            android:textSize="16sp"
-                            android:id="@+id/notLearningText"
-                            android:layout_marginTop="15dp"
-                            android:text="Not Learned"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <ProgressBar
-                            android:id="@+id/statisticIndicator"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:indeterminateOnly="false"
-                            android:progress="70"
-                            android:secondaryProgress="50"
-                            android:progressDrawable="@drawable/feedback_progress_bar"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
-
 
             </LinearLayout>
         </LinearLayout>

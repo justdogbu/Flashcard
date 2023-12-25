@@ -123,8 +123,7 @@ public class SearchFragment extends Fragment implements CustomOnItemClickListene
                 if (!searchText.isEmpty()) {
                     List<Topic> filteredList = new ArrayList<>();
                     for (Topic topic : mutableList) {
-                        if (topic.getTopicName().toLowerCase().contains(searchText) ||
-                                topic.getDescription().toLowerCase().contains(searchText)) {
+                        if (topic.getTopicName().toLowerCase().contains(searchText)){
                             filteredList.add(topic);
                         }
                     }

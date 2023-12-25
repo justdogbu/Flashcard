@@ -213,8 +213,8 @@ public class HomeFragment extends Fragment implements CustomOnItemClickListener 
 
     @Override
     public void onFolderClick(Folder folder) {
-        Intent folderDetailIntent = new Intent(requireContext(), FolderDetailActivity.class);
-        folderDetailIntent.putExtra("folder", folder);
-        startActivity(folderDetailIntent);
+        Intent intent = new Intent(requireContext(), FolderDetailActivity.class);
+        intent.putExtra("folder", folder);
+        startActivity(intent);
     }
 }

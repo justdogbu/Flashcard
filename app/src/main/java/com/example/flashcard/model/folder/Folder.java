@@ -6,10 +6,16 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class Folder implements Parcelable {
-    @SerializedName("_id")
+    @SerializedName("folderID")
     private int id;
+    @SerializedName("userID")
+
     private String userId;
+    @SerializedName("folderName")
+
     private String folderName;
+    @SerializedName("folderDescription")
+
     private String folderDescription;
     private int topicCount;
     private ArrayList<String> topicInFolderId;

@@ -202,7 +202,7 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
             startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
         } else {
             startBtn.setEnabled(true);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
+            startBtn.setBackground(getDrawable(R.drawable.ripple_login_btn));
         }
     }
 }

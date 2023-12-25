@@ -311,35 +311,38 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
             public void onAnimationEnd(Animator animator) {
                 isFlipping = false;
                 if (isAutoPlayAudio) {
-                    if (language == Constant.Language.ENGLISH) {
-                        if (isFrontFirst) {
-                            if (isFront) {
-                                ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                    if(index < vocabularies.size()){
+                        if (language == Constant.Language.ENGLISH) {
+                            if (isFrontFirst) {
+                                if (isFront) {
+                                    ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                } else {
+                                    ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                }
                             } else {
-                                ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                if (isFront) {
+                                    ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                } else {
+                                    ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                }
                             }
                         } else {
-                            if (isFront) {
-                                ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                            if (isFrontFirst) {
+                                if (isFront) {
+                                    ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                } else {
+                                    ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                }
                             } else {
-                                ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            }
-                        }
-                    } else {
-                        if (isFrontFirst) {
-                            if (isFront) {
-                                ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            } else {
-                                ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            }
-                        } else {
-                            if (isFront) {
-                                ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            } else {
-                                ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                if (isFront) {
+                                    ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                } else {
+                                    ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                                }
                             }
                         }
                     }
+
                 }
             }
 

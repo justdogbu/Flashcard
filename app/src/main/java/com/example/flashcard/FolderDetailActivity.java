@@ -127,34 +127,6 @@ public class FolderDetailActivity extends AppCompatActivity implements CustomOnI
             noTopicsInFolderLayout.setVisibility(View.GONE);
         }
 
-//        addTopicResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-//            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-//                ArrayList<Topic> topics = result.getData().getParcelableArrayListExtra("topics");
-//                if (topics != null) {
-//                    List<Topic> currentList = topicList;
-//                    List<Topic> addedTopic = topics.stream().filter(topic -> !currentList.contains(topic)).collect(Collectors.toList());
-//                    List<Topic> removedTopic = currentList.stream().filter(topic -> !topics.contains(topic)).collect(Collectors.toList());
-//
-//                    folderViewModel.updateTopicForFolder(apiService, getCurrentFocus(), FolderDetailActivity.this, addedTopic, removedTopic, folder, sharedPreferences);
-//                    runOnUiThread(() -> {
-//                        topicList = new ArrayList<>(topics);
-//                        if (topics.isEmpty()) {
-//                            folderTopicCount.setText("0 Topic");
-//                            folderDetailRecyclerView.setVisibility(View.GONE);
-//                            noTopicsInFolderLayout.setVisibility(View.VISIBLE);
-//                        } else {
-//                            folderTopicCount.setText(topics.size() + " Topics");
-//                            folderDetailRecyclerView.setVisibility(View.VISIBLE);
-//                            noTopicsInFolderLayout.setVisibility(View.GONE);
-//                            adapter = new TopicAdapter(FolderDetailActivity.this, topics, R.layout.topic_library_item, FolderDetailActivity.this);
-//                            folderDetailRecyclerView.setHasFixedSize(true);
-//                            folderDetailRecyclerView.setLayoutManager(new LinearLayoutManager(FolderDetailActivity.this, LinearLayoutManager.VERTICAL, false));
-//                            folderDetailRecyclerView.setAdapter(adapter);
-//                        }
-//                    });
-//                }
-//            }
-//        });
         ActivityResultLauncher<Intent> mGetContent = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult o) {
@@ -165,8 +137,6 @@ public class FolderDetailActivity extends AppCompatActivity implements CustomOnI
         addTopicToFolderBtn.setOnClickListener(view -> {
             Intent intent = new Intent(FolderDetailActivity.this, AddTopicToFolderActivity.class);
             intent.putExtra("folder", folder);
-            intent.putExtra("folderID", folder.getId());
-            intent.putParcelableArrayListExtra("currentTopics", new ArrayList<>());
 //            startActivity(intent);
             mGetContent.launch(intent);
         });
@@ -176,7 +146,15 @@ public class FolderDetailActivity extends AppCompatActivity implements CustomOnI
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.folder_detail_bottom_sheet);
-
+        ImageButton addTopicOptionBtn = dialog.findViewById(R.id.addTopicOptionBtn);
+        addTopicOptionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FolderDetailActivity.this, AddTopicToFolderActivity.class);
+                intent.putExtra("folder", folder);
+                startActivity(intent);
+            }
+        });
 
         dialog.show();
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);

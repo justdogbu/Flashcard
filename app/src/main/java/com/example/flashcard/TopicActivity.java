@@ -63,7 +63,6 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
     private Topic topic;
     private List<Vocabulary> vocabulariesList;
     private boolean isOwner;
-    private List<Vocabulary> originalVocabulariesList;
     private SharedPreferences sharedPreferences;
     private ActivityResultLauncher<Intent> addTopicToFolderResultLauncher;
     private ActivityResultLauncher<Intent> editTopicVocabulariesResultLauncher;

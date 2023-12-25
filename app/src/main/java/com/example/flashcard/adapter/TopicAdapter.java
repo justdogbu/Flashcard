@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.utils.CustomOnItemClickListener;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.squareup.picasso.Picasso;
 import com.example.flashcard.R;
 
 import java.util.List;
@@ -76,8 +75,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
             super(itemView);
             topicNameTxt = itemView.findViewById(R.id.topicItemNameTxt);
             topicTermsCount = itemView.findViewById(R.id.termsCount);
-            topicOwnerImg = itemView.findViewById(R.id.topicOwnerImg);
-            topicOwnerNameTxt = itemView.findViewById(R.id.topicOwnerNameTxt);
+            topicOwnerImg = itemView.findViewById(R.id.topicUserImg);
+            topicOwnerNameTxt = itemView.findViewById(R.id.topicUserName);
             learnerCount = itemView.findViewById(R.id.learnerCount);
         }
     }

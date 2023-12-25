@@ -20,6 +20,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".StudySetupActivity"
+            android:exported="false"
+            android:label="@string/title_activity_study_setup"
+            android:theme="@style/Theme.Flashcard" />
+        <activity
             android:name=".FolderDetailBottom"
             android:exported="false" />
         <activity

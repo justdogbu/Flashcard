@@ -12,4 +12,14 @@ public class Constant {
     public static final float MIN_SCALE = SCALE_PERCENT * MAX_SCALE;
     public static final float MAX_ALPHA = 1.0f;
     public static final float MIN_ALPHA = 0.05f;
+    public static enum StudyMode{
+        Quiz,
+        Flashcard,
+        Typing
+    }
+
+    public static enum Language{
+        ENGLISH,
+        VIETNAMESE
+    }
 }

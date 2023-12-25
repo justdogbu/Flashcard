@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.Topics;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.User;
+import com.example.flashcard.model.user.UserFromTopicResponse;
 import com.example.flashcard.model.vocabulary.VocabulariesFromTopicResponse;
 import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
@@ -33,6 +35,7 @@ import com.example.flashcard.utils.Utils;
 import com.example.flashcard.viewmodel.TopicViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,6 +200,29 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
             public void onFailure(Call<VocabulariesFromTopicResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 Utils.showDialog(Gravity.CENTER, "ERROR WHEN LOAD TOPIC", TopicActivity.this);
+            }
+        });
+
+        apiService = ApiClient.getClient();
+        Call<UserFromTopicResponse> userCall = apiService.getUserFromTopic(topic.getId());
+        userCall.enqueue(new Callback<UserFromTopicResponse>() {
+            @Override
+            public void onResponse(Call<UserFromTopicResponse> call, Response<UserFromTopicResponse> response) {
+                progressBar.setVisibility(View.GONE);
+                UserFromTopicResponse userFromTopicResponse = response.body();
+                User owner = userFromTopicResponse.getData();
+                if(owner != null){
+                    if(owner.getProfileImage() != null) {
+                        Picasso.get().load(Uri.parse(owner.getProfileImage())).into(topicUserImg);
+                    }
+                    topicUserName.setText(owner.getUsername());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserFromTopicResponse> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Utils.showDialog(Gravity.CENTER, "ERROR WHEN LOAD USER", TopicActivity.this);
             }
         });
     }

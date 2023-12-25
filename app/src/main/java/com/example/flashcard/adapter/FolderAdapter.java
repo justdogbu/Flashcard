@@ -41,8 +41,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
             super(itemView);
             folderNameTxt = itemView.findViewById(R.id.folderNameEnglishTv);
             folderDescription = itemView.findViewById(R.id.folderNameVietnameseTv);
-            folderOwnerImg = itemView.findViewById(R.id.folderOwnerImg);
-            folderOwnerNameTxt = itemView.findViewById(R.id.folderOwnerNameTxt);
+            folderOwnerImg = itemView.findViewById(R.id.folderUserImg);
+            folderOwnerNameTxt = itemView.findViewById(R.id.folderUserName);
         }
     }
 

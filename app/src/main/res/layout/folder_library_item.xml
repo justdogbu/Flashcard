@@ -45,7 +45,7 @@
         android:layout_height="wrap_content">
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_gravity="center_horizontal"
-            android:id="@+id/folderOwnerImg"
+            android:id="@+id/folderUserImg"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/flashcard_icon"
             app:shapeAppearanceOverlay="@style/circle"
@@ -55,7 +55,7 @@
             android:layout_height="40dp"/>
 
         <TextView
-            android:id="@+id/folderOwnerNameTxt"
+            android:id="@+id/folderUserName"
             android:text="Topic Owner"
             android:fontFamily="@font/bevietnampro_bold"
             android:textColor="@color/white"

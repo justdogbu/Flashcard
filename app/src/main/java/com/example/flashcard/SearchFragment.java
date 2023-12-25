@@ -2,6 +2,7 @@ package com.example.flashcard;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -175,7 +176,9 @@ public class SearchFragment extends Fragment implements CustomOnItemClickListene
 
     @Override
     public void onTopicClick(Topic topic) {
-
+        Intent intent = new Intent(requireContext(), TopicActivity.class);
+        intent.putExtra("topic", topic);
+        startActivity(intent);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.flashcard.repository;
 
 import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.folder.FoldersFormUserResponse;
+import com.example.flashcard.model.topic.PublicTopicResponse;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
@@ -89,5 +90,12 @@ public interface ApiService {
     @POST("getUserByTopicID.php")
     Call<UserFromTopicResponse> getUserFromTopic(
             @Field("topicID") int topicID
+    );
+
+    @FormUrlEncoded
+    @POST("findPubluTopic.php")
+    Call<PublicTopicResponse> getPublicTopic(
+            @Field("userID") int userId
+
     );
 }

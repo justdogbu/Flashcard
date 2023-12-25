@@ -7,14 +7,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -108,14 +113,7 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
         optionMenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TopicDetailBottom bottomSheet = new TopicDetailBottom();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("topic", topic);
-                User user = Utils.getUserFromSharedPreferences(TopicActivity.this, sharedPreferences);
-                boolean isYourTopic = topic.getOwnerId() == user.getId();
-                bundle.putBoolean("isYourTopic", isYourTopic);
-                bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "topicBottomSheet");
+                showBottomDialog();
             }
         });
 
@@ -182,7 +180,19 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
             }
         });
     }
+    private void showBottomDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.topic_bottom_sheet);
 
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+    }
     private void initViewModel() {
         progressBar.setVisibility(View.VISIBLE);
         apiService = ApiClient.getClient();

@@ -45,6 +45,6 @@ public class HomeDataViewModel extends ViewModel {
     }
 
     public void setPublicTopicsList(List<Topic> publicTopicsList) {
-        this.publicTopicsList.setValue(publicTopicsList);
+        this.publicTopicsList.postValue(publicTopicsList);
     }
 }

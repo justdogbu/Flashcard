@@ -8,8 +8,8 @@ import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.LoginResponse;
 import com.example.flashcard.model.user.RegisterResponse;
 import com.example.flashcard.model.user.UpdateResponse;
-import com.example.flashcard.model.user.User;
-import com.example.flashcard.model.vocabulary.VocabuResponse;
+import com.example.flashcard.model.vocabulary.VocabulariesFromTopicResponse;
+import com.example.flashcard.model.vocabulary.VocabularyResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -52,7 +52,7 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("createVocabulary.php")
-    Call<VocabuResponse> createVocabulary(
+    Call<VocabularyResponse> createVocabulary(
             @Field("vocabulary") String vocabulary,
             @Field("meaning") String meaning,
             @Field("topicID") int topicID
@@ -76,5 +76,11 @@ public interface ApiService {
     @POST("get_folder_user.php")
     Call<FoldersFormUserResponse> getUserFolder(
             @Field("userID") int userID
+    );
+
+    @FormUrlEncoded
+    @POST("getVocabularyByTopic.php")
+    Call<VocabulariesFromTopicResponse> getVocabulariesFromTopic(
+            @Field("topicID") int topicID
     );
 }

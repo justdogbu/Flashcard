@@ -1,14 +1,15 @@
 package com.example.flashcard.model.vocabulary;
 
-import com.example.flashcard.model.user.User;
 import com.google.gson.annotations.SerializedName;
 
-public class VocabuResponse {
+import java.util.List;
+
+public class VocabulariesFromTopicResponse {
     @SerializedName("status")
     private String status;
 
     @SerializedName("data")
-    private Vocabulary data;
+    private List<Vocabulary> data;
 
     @SerializedName("message")
     private String message;
@@ -17,7 +18,7 @@ public class VocabuResponse {
         return status;
     }
 
-    public Vocabulary getData() {
+    public List<Vocabulary> getData() {
         return data;
     }
 

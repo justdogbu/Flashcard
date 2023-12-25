@@ -35,13 +35,9 @@ import com.example.flashcard.model.folder.Folder;
 import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.folder.FoldersFormUserResponse;
 import com.example.flashcard.model.topic.Topic;
-import com.example.flashcard.model.topic.TopicDetailResponse;
-import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.topic.Topics;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.User;
-import com.example.flashcard.model.vocabulary.VocabuResponse;
-import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
@@ -59,7 +55,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;

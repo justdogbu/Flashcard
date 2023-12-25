@@ -51,7 +51,6 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
     private boolean answerByVocabulary = true;
     private boolean questionByMeaning = true;
     private boolean questionByVocabulary = true;
-    private List<Vocabulary> bookmarkedVocabularies;
     private ImageButton closeBtn;
     private MaterialButton startBtn;
     @Override
@@ -77,7 +76,6 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
         if (data != null) {
             studyMode = (Constant.StudyMode) intent.getSerializableExtra("studyMode");
             vocabularies = intent.getParcelableArrayListExtra("vocabularies");
-            bookmarkedVocabularies = intent.getParcelableArrayListExtra("bookmarkedVocabularies");
             topic = data;
         } else {
             finish();
@@ -163,7 +161,6 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
                     quizIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
                     quizIntent.putExtra("instantFeedBack", instantFeedBackSwitch.isChecked());
                     quizIntent.putExtra("studyMode", studyMode);
-                    quizIntent.putParcelableArrayListExtra("bookmarkedVocabularies", new ArrayList<>(bookmarkedVocabularies));
                     startActivity(quizIntent);
                 } else if (studyMode == Constant.StudyMode.Typing) {
                     Intent typingIntent = new Intent(StudySetupActivity.this, TypingActivity.class);
@@ -179,7 +176,6 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
                     typingIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
                     typingIntent.putExtra("instantFeedBack", instantFeedBackSwitch.isChecked());
                     typingIntent.putExtra("studyMode", studyMode);
-                    typingIntent.putParcelableArrayListExtra("bookmarkedVocabularies", new ArrayList<>(bookmarkedVocabularies));
                     startActivity(typingIntent);
                 }
             }

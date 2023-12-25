@@ -21,7 +21,7 @@ import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.user.User;
-import com.example.flashcard.model.vocabulary.VocabuResponse;
+import com.example.flashcard.model.vocabulary.VocabularyResponse;
 import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
 import com.example.flashcard.repository.ApiService;
@@ -30,8 +30,6 @@ import com.example.flashcard.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -184,14 +182,14 @@ public class CreateTopicActivity extends AppCompatActivity {
 
     private  void CreateVocabulary(String vocabulary, String meaning, int topicID){
         ApiService apiService = ApiClient.getClient();
-        Call<VocabuResponse> call = apiService.createVocabulary(vocabulary, meaning, topicID);
+        Call<VocabularyResponse> call = apiService.createVocabulary(vocabulary, meaning, topicID);
 
-        call.enqueue(new Callback<VocabuResponse>() {
+        call.enqueue(new Callback<VocabularyResponse>() {
             @Override
-            public void onResponse(Call<VocabuResponse> call, Response<VocabuResponse> response) {
+            public void onResponse(Call<VocabularyResponse> call, Response<VocabularyResponse> response) {
                 if (response.isSuccessful()) {
-                    VocabuResponse vocabuResponse = response.body();
-                    if (vocabuResponse != null && "OK".equals(vocabuResponse.getStatus())) {
+                    VocabularyResponse vocabularyResponse = response.body();
+                    if (vocabularyResponse != null && "OK".equals(vocabularyResponse.getStatus())) {
                         Log.d("CreateTopicActivity", "Create success");
                     } else {
                         Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -208,7 +206,7 @@ public class CreateTopicActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<VocabuResponse> call, Throwable t) {
+            public void onFailure(Call<VocabularyResponse> call, Throwable t) {
                 Toast.makeText(CreateTopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", CreateTopicActivity.this );

@@ -1,5 +1,6 @@
 package com.example.flashcard.adapter;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,7 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.ViewHolder> {
-    public List<Vocabulary> vocabs = new ArrayList<>();
+    public List<Vocabulary> vocabs;
+
+    public VocabularyAdapter(List<Vocabulary> vocabularyList){
+        vocabs = vocabularyList;
+    }
 
     private DownloadConditions downloadConditions = new DownloadConditions.Builder().requireWifi().build();
     private TranslatorOptions engToVietOptions = new TranslatorOptions.Builder()
@@ -45,7 +50,9 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Vocabulary vocab = vocabs.get(holder.getAdapterPosition());
+        Vocabulary vocab = vocabs.get(position);
+        holder.editTextVocabulary.setText(vocab.getVocabulary());
+        holder.editTextMeaning.setText(vocab.getMeaning());
 
         holder.removeVocabularyBtn.setOnClickListener(new View.OnClickListener() {
             @Override

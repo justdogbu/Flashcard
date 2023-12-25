@@ -1,5 +1,6 @@
 package com.example.flashcard;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,20 +59,23 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
     private ApiService apiService;
     private Topic topic;
     private List<Vocabulary> vocabulariesList;
+    private boolean isOwner;
     private List<Vocabulary> originalVocabulariesList;
     private SharedPreferences sharedPreferences;
+    private ActivityResultLauncher<Intent> addTopicToFolderResultLauncher;
+    private ActivityResultLauncher<Intent> editTopicVocabulariesResultLauncher;
+
+    private User user;
     private VocabularyInFlashcardAdapter vocabularyInFlashcardAdapter;
     private TextToSpeech ttsEnglish;
     private TextToSpeech ttsVietnamese;
-    private ActivityResultLauncher<Intent> addTopicToFolderResultLauncher;
-    private ActivityResultLauncher<Intent> editTopicVocabulariesResultLauncher;
+
     private ImageButton optionMenuBtn;
     private ImageButton returnBtn;
     private ViewPager2 flashCardViewPager;
     private MaterialButton learnByFlashCardBtn;
     private MaterialButton learnByQuizBtn;
     private MaterialButton learnByTypingBtn;
-    private MaterialButton rankingBtn;
     private ShapeableImageView topicUserImg;
     private TextView topicUserName;
     private TextView topicName;
@@ -84,12 +88,15 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
 
+        sharedPreferences = getSharedPreferences(Constant.SHARE_PREF, MODE_PRIVATE);
+        user = Utils.getUserFromSharedPreferences(this, sharedPreferences);
         Intent intent = getIntent();
         Topic data = intent.getParcelableExtra("topic");
         ttsEnglish = new TextToSpeech(this, this);
         ttsVietnamese = new TextToSpeech(this, this);
         optionMenuBtn = findViewById(R.id.optionMenuBtn);
         returnBtn = findViewById(R.id.returnBtn);
+        ActivityResult addTopicToFolderResultLauncher;
         flashCardViewPager = findViewById(R.id.flashCardViewPager);
         topicUserImg = findViewById(R.id.topicUserImg);
         topicUserName = findViewById(R.id.topicUserName);
@@ -105,6 +112,7 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
             finish();
         } else {
             topic = data;
+            isOwner = user.getId() == topic.getOwnerId() ? true : false;
         }
 
         apiService = ApiClient.getClient();
@@ -185,7 +193,26 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.topic_bottom_sheet);
 
+        MaterialButton addTopicToFolderBtn = dialog.findViewById(R.id.addTopicToFolderBtn);
+        MaterialButton editTopicBtn = dialog.findViewById(R.id.editTopicBtn);
+        MaterialButton deleteTopicBtn = dialog.findViewById(R.id.deleteTopicBtn);
 
+        if(isOwner){
+            editTopicBtn.setVisibility(View.VISIBLE);
+            deleteTopicBtn.setVisibility(View.VISIBLE);
+        }
+        else{
+            editTopicBtn.setVisibility(View.GONE);
+            deleteTopicBtn.setVisibility(View.GONE);
+        }
+        editTopicBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TopicActivity.this, CreateTopicActivity.class);
+                intent.putExtra("topic", topic);
+                startActivity(intent);
+            }
+        });
         dialog.show();
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -290,5 +317,11 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
             ttsVietnamese.stop();
             ttsVietnamese.shutdown();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initViewModel();
     }
 }

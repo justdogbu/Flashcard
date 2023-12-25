@@ -434,8 +434,6 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
             public void onResponse(Call<PublicTopicResponse> call, Response<PublicTopicResponse> response) {
                 PublicTopicResponse publicTopicResponse = response.body();
                 List<Topic> publicTopic = publicTopicResponse.getData();
-                Log.d("test public topic", publicTopicResponse.getMessage() + "");
-
                 if(publicTopic != null){
                     userViewModel.setPublicTopicsList(publicTopic);
                 }

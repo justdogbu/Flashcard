@@ -49,7 +49,7 @@
         android:layout_height="wrap_content">
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_gravity="center_horizontal"
-            android:id="@+id/topicOwnerImg"
+            android:id="@+id/topicUserImg"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/flashcard_icon"
             app:shapeAppearanceOverlay="@style/circle"
@@ -59,7 +59,7 @@
             android:layout_height="40dp"/>
 
         <TextView
-            android:id="@+id/topicOwnerNameTxt"
+            android:id="@+id/topicUserName"
             android:text="Topic Owner"
             android:textColor="@color/white"
             android:layout_marginStart="20dp"

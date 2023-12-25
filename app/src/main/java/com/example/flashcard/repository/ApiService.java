@@ -2,6 +2,7 @@ package com.example.flashcard.repository;
 
 import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.folder.FoldersFormUserResponse;
+import com.example.flashcard.model.topic.DeleteTopic;
 import com.example.flashcard.model.topic.PublicTopicResponse;
 import com.example.flashcard.model.topic.TopicDetailResponse;
 import com.example.flashcard.model.topic.TopicResponse;
@@ -115,5 +116,11 @@ public interface ApiService {
     @POST("deleteVocabulary.php")
     Call<DeleteVocabularyResponse> deleteVocabulary(
             @Field("topicID") int topicID
+    );
+
+    @FormUrlEncoded
+    @POST("deleteTopic.php")
+    Call<DeleteTopic> deleteTopic(
+            @Field("topicid") int topicid
     );
 }

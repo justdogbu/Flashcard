@@ -24,9 +24,12 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.flashcard.adapter.VocabularyInFlashcardAdapter;
+import com.example.flashcard.model.topic.DeleteTopic;
 import com.example.flashcard.model.topic.Topic;
+import com.example.flashcard.model.topic.TopicResponse;
 import com.example.flashcard.model.topic.Topics;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.User;
@@ -213,6 +216,14 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
                 startActivity(intent);
             }
         });
+
+        deleteTopicBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                DeleteTopic(topic.getId());
+            }
+        });
         dialog.show();
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -323,5 +334,34 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
     protected void onResume() {
         super.onResume();
         initViewModel();
+    }
+
+    private void DeleteTopic(int topicID){
+        Call<DeleteTopic> call = apiService.deleteTopic(topicID);
+        call.enqueue(new Callback<DeleteTopic>() {
+            @Override
+            public void onResponse(Call<DeleteTopic> call, Response<DeleteTopic> response) {
+                if (response.isSuccessful()) {
+                    DeleteTopic deleteTopic = response.body();
+                    if (deleteTopic != null && "OK".equals(deleteTopic.getStatus())) {
+                        Utils.showDialog(Gravity.CENTER, "Topic deleted", TopicActivity.this );
+                        finish();
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        Utils.showDialog(Gravity.CENTER, "Delete 12312321", TopicActivity.this );
+                    }
+                } else {
+                    Toast.makeText(TopicActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Utils.showDialog(Gravity.CENTER, "Delete error", TopicActivity.this );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteTopic> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Utils.showDialog(Gravity.CENTER, "Something went wrong! Please try again!", TopicActivity.this );
+            }
+        });
     }
 }

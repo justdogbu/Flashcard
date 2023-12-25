@@ -1,6 +1,7 @@
 package com.example.flashcard.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,20 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flashcard.model.topic.Topic;
+import com.example.flashcard.model.user.User;
+import com.example.flashcard.model.user.UserFromTopicResponse;
+import com.example.flashcard.repository.ApiClient;
+import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.CustomOnItemClickListener;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.example.flashcard.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHolder> {
     private Context mContext;
@@ -54,9 +64,27 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.TopicViewHol
         });
         holder.topicNameTxt.setText(topic.getTopicName());
         holder.topicTermsCount.setText(topic.getVocabularyCount() + " Vocabulary");
-        //holder.topicOwnerNameTxt.setText(topic.getOwnerId());
-        //holder.learnerCount.setText(topic.getUserId().size() + " Learner");
-        //Picasso.get().load(topic.getOwnerId().getProfileImage()).into(holder.topicOwnerImg);
+        ApiService apiService = ApiClient.getClient();
+        Call<UserFromTopicResponse> call = apiService.getUserFromTopic(topic.getId());
+        call.enqueue(new Callback<UserFromTopicResponse>() {
+            @Override
+            public void onResponse(Call<UserFromTopicResponse> call, Response<UserFromTopicResponse> response) {
+                UserFromTopicResponse userFromTopicResponse = response.body();
+                User owner = userFromTopicResponse.getData();
+                if(owner != null){
+                    holder.topicOwnerNameTxt.setText(owner.getUsername());
+                    if(owner.getProfileImage() != null) {
+                        Picasso.get().load(Uri.parse(owner.getProfileImage())).into(holder.topicOwnerImg);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserFromTopicResponse> call, Throwable t) {
+
+            }
+        });
+
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.example.flashcard.model.topic.TopicsFormUserResponse;
 import com.example.flashcard.model.user.LoginResponse;
 import com.example.flashcard.model.user.RegisterResponse;
 import com.example.flashcard.model.user.UpdateResponse;
+import com.example.flashcard.model.user.UserFromTopicResponse;
 import com.example.flashcard.model.vocabulary.VocabulariesFromTopicResponse;
 import com.example.flashcard.model.vocabulary.VocabularyResponse;
 
@@ -81,6 +82,12 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("getVocabularyByTopic.php")
     Call<VocabulariesFromTopicResponse> getVocabulariesFromTopic(
+            @Field("topicID") int topicID
+    );
+
+    @FormUrlEncoded
+    @POST("getUserByTopicID.php")
+    Call<UserFromTopicResponse> getUserFromTopic(
             @Field("topicID") int topicID
     );
 }

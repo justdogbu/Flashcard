@@ -7,17 +7,27 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.flashcard.adapter.TopicAdapter;
 import com.example.flashcard.model.folder.Folder;
+import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.user.User;
 import com.example.flashcard.repository.ApiClient;
@@ -25,8 +35,10 @@ import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.CustomOnItemClickListener;
 import com.example.flashcard.utils.OnDialogConfirmListener;
+import com.example.flashcard.utils.Utils;
 import com.example.flashcard.viewmodel.FolderViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -34,6 +46,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FolderDetailActivity extends AppCompatActivity implements CustomOnItemClickListener, OnDialogConfirmListener {
     private Folder folder;
@@ -76,11 +92,7 @@ public class FolderDetailActivity extends AppCompatActivity implements CustomOnI
 
         optionMenuBtn = findViewById(R.id.optionMenuBtn);
         optionMenuBtn.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("folder", folder);
-            BottomSheetDialogFragment bottomSheet = new FolderDetailBottom();
-            bottomSheet.setArguments(bundle);
-            bottomSheet.showNow(getSupportFragmentManager(), "folder detail sheet");
+            showBottomDialog();
         });
 
         apiService = ApiClient.getClient();
@@ -155,7 +167,19 @@ public class FolderDetailActivity extends AppCompatActivity implements CustomOnI
         });
 
     }
+    private void showBottomDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.folder_detail_bottom_sheet);
 
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+    }
     @Override
     public void onTopicClick(Topic topic) {
         Intent intent = new Intent(FolderDetailActivity.this, TopicActivity.class);

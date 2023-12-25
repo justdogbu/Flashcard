@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.flashcard.model.folder.Folder;
 import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.folder.FoldersFormUserResponse;
+import com.example.flashcard.model.topic.PublicTopicResponse;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.Topics;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
@@ -252,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
                                     if (folderResponse != null && "OK".equals(folderResponse.getStatus())) {
                                         Log.d("CreateTopicActivity", "Create success");
                                         Utils.showDialog(Gravity.CENTER, "Folder created", HomeActivity.this );
-                                        fetchData();
+                                        initViewModel();
                                     } else {
                                         Toast.makeText(HomeActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                         Utils.showDialog(Gravity.CENTER, "Failed to create folder! Try again!", HomeActivity.this );
@@ -375,13 +376,13 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
         NetworkInfo activeNetwork = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
 
         if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
-            fetchData();
+            initViewModel();
         } else {
             Utils.showSnackBar(getCurrentFocus(), "No Internet Connection");
         }
     }
 
-    private void fetchData() {
+    private void initViewModel() {
         ApiService apiService = ApiClient.getClient();
         Call<TopicsFormUserResponse> callTopics = apiService.getUserTopic(userViewModel.getUser().getValue().getId());
         callTopics.enqueue(new Callback<TopicsFormUserResponse>() {
@@ -426,6 +427,26 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
 
             }
         });
+
+        Call<PublicTopicResponse> callPublicTopic = apiService.getPublicTopic(userViewModel.getUser().getValue().getId());
+        callPublicTopic.enqueue(new Callback<PublicTopicResponse>() {
+            @Override
+            public void onResponse(Call<PublicTopicResponse> call, Response<PublicTopicResponse> response) {
+                PublicTopicResponse publicTopicResponse = response.body();
+                List<Topic> publicTopic = publicTopicResponse.getData();
+                Log.d("test public topic", publicTopicResponse.getMessage() + "");
+
+                if(publicTopic != null){
+                    userViewModel.setPublicTopicsList(publicTopic);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PublicTopicResponse> call, Throwable t) {
+                Log.d("Fetch data", "ERROR " + t);
+
+            }
+        });
     }
 
     @Override
@@ -445,7 +466,7 @@ public class HomeActivity extends AppCompatActivity implements OnBottomNavigatio
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_INTERNET_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fetchData();
+                initViewModel();
             } else {
                 Utils.showSnackBar(getCurrentFocus(), "Permission Denied");
             }

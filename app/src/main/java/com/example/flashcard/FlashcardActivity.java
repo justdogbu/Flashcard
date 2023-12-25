@@ -7,13 +7,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Dialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -120,16 +125,7 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
         flashCardOptionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isAutoPlayCard = false;
-                setVocabulary();
-                FlashCardOption dialog = new FlashCardOption();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("isShuffled", isShuffled);
-                bundle.putBoolean("isAutoPlayAudio", isAutoPlayAudio);
-                bundle.putSerializable("language", language);
-                bundle.putBoolean("isFrontFirst", isFrontFirst);
-                dialog.setArguments(bundle);
-                dialog.show(getSupportFragmentManager(), "FlashCardOptionSheet");
+                showBottomDialog();
             }
         });
 
@@ -170,6 +166,20 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
                 }
             }
         });
+    }
+
+    private void showBottomDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.topic_bottom_sheet);
+
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+
     }
 
     @Override

@@ -150,32 +150,10 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
                 if (studyMode == Constant.StudyMode.Quiz) {
                     Intent quizIntent = new Intent(StudySetupActivity.this, QuizActivity.class);
                     boolean shuffleQuestion = shuffleQuestionSwitch.isChecked();
-                    quizIntent.putExtra("topic", topic);
-                    quizIntent.putExtra("studyLanguage", studyLanguage);
-                    quizIntent.putExtra("questionCount", questionCountEdt.getText().toString().isEmpty() ? vocabularies.size() : Integer.parseInt(questionCountEdt.getText().toString()));
-                    quizIntent.putExtra("shuffleQuestion", shuffleQuestion);
-                    quizIntent.putExtra("answerByMeaning", answerByMeaning);
-                    quizIntent.putExtra("answerByVocabulary", answerByVocabulary);
-                    quizIntent.putExtra("questionByMeaning", questionByMeaning);
-                    quizIntent.putExtra("questionByVocabulary", questionByVocabulary);
-                    quizIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
-                    quizIntent.putExtra("instantFeedBack", instantFeedBackSwitch.isChecked());
-                    quizIntent.putExtra("studyMode", studyMode);
                     startActivity(quizIntent);
                 } else if (studyMode == Constant.StudyMode.Typing) {
                     Intent typingIntent = new Intent(StudySetupActivity.this, TypingActivity.class);
                     boolean shuffleQuestion = shuffleQuestionSwitch.isChecked();
-                    typingIntent.putExtra("topic", topic);
-                    typingIntent.putExtra("studyLanguage", studyLanguage);
-                    typingIntent.putExtra("questionCount", questionCountEdt.getText().toString().isEmpty() ? vocabularies.size() : Integer.parseInt(questionCountEdt.getText().toString()));
-                    typingIntent.putExtra("shuffleQuestion", shuffleQuestion);
-                    typingIntent.putExtra("answerByMeaning", answerByMeaning);
-                    typingIntent.putExtra("answerByVocabulary", answerByVocabulary);
-                    typingIntent.putExtra("questionByMeaning", questionByMeaning);
-                    typingIntent.putExtra("questionByVocabulary", questionByVocabulary);
-                    typingIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
-                    typingIntent.putExtra("instantFeedBack", instantFeedBackSwitch.isChecked());
-                    typingIntent.putExtra("studyMode", studyMode);
                     startActivity(typingIntent);
                 }
             }

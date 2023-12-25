@@ -21,7 +21,7 @@ public class FolderViewModel extends ViewModel {
     }
 
     private static class UpdateTopicAsyncTask extends AsyncTask<Void, Void, Void> {
-        private ApiService dataRepository;
+        private ApiService apiService;
         private View view;
         private Context mContext;
         private List<Topic> addedTopic;
@@ -31,7 +31,7 @@ public class FolderViewModel extends ViewModel {
 
         public UpdateTopicAsyncTask(ApiService apiService, View view, Context mContext,
                                     List<Topic> addedTopic, List<Topic> removedTopic, Folder folder, SharedPreferences sharedPreferences) {
-            this.dataRepository = dataRepository;
+            this.apiService = this.apiService;
             this.view = view;
             this.mContext = mContext;
             this.addedTopic = addedTopic;
@@ -44,7 +44,6 @@ public class FolderViewModel extends ViewModel {
         protected Void doInBackground(Void... voids) {
             for (Topic topic : addedTopic) {
                 try {
-                    //dataRepository.addTopicToFolder(folder.getId(), topic.getId());
                 } catch (Exception e) {
                     Utils.showSnackBar(view, e.getMessage());
                 }
@@ -52,7 +51,6 @@ public class FolderViewModel extends ViewModel {
 
             for (Topic topic : removedTopic) {
                 try {
-                    //dataRepository.deleteTopicFromFolder(folder.getId(), topic.getId(), ).get();
                 } catch (Exception e) {
                     Utils.showSnackBar(view, e.getMessage());
                 }

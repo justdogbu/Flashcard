@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".FolderDetailBottom"
+            android:exported="false" />
+        <activity
             android:name=".TypingActivity"
             android:exported="false" />
         <activity
@@ -45,7 +48,7 @@
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".CreateTopicActivity"
             android:exported="true">

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,10 +44,12 @@ public class FeedbackActivity extends AppCompatActivity {
     private TextView resultFeedbackTxt;
     private TextView feedBackTxt;
     private MaterialButton flashcardBtn;
+    private Constant.StudyMode studyMode;
 
     private MaterialButton tryAgainBtn;
     private RecyclerView answerRecyclerView;
     private ImageButton closeBtn;
+    private MaterialButton quizOrTypingBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class FeedbackActivity extends AppCompatActivity {
         tryAgainBtn = findViewById(R.id.tryAgainBtn);
         closeBtn = findViewById(R.id.closeBtn);
         answerRecyclerView = findViewById(R.id.answerRecyclerView);
+        quizOrTypingBtn = findViewById(R.id.learnByQuizOrTyping);
 
         Intent intent = getIntent();
         vocabulariesList = intent.getParcelableArrayListExtra("vocabularies");
@@ -73,6 +77,7 @@ public class FeedbackActivity extends AppCompatActivity {
         }
         chosenAnswers = intent.getStringArrayListExtra("chosenAnswers");
         topic = intent.getParcelableExtra("topic");
+        studyMode = (Constant.StudyMode) intent.getSerializableExtra("studyMode");
         int correctCount = intent.getIntExtra("correctCount", 0);
         int incorrectCount = intent.getIntExtra("incorrectCount", 0);
         int totalCount = intent.getIntExtra("totalCount", 0);
@@ -96,6 +101,34 @@ public class FeedbackActivity extends AppCompatActivity {
             resultDataList.add(resultData);
         }
 
+        if(studyMode == Constant.StudyMode.Quiz){
+            quizOrTypingBtn.setText("LEARN BY TYPING");
+            quizOrTypingBtn.setIcon(getDrawable(R.drawable.typing));
+            quizOrTypingBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(FeedbackActivity.this, StudySetupActivity.class);
+                    intent.putExtra("topic", topic);
+                    intent.putExtra("studyMode", Constant.StudyMode.Typing);
+                    intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
+                    startActivity(intent);
+                }
+            });
+        } else if (studyMode == Constant.StudyMode.Typing) {
+            quizOrTypingBtn.setText("LEARN BY QUIZ");
+            quizOrTypingBtn.setIcon(getDrawable(R.drawable.quiz));
+            quizOrTypingBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(FeedbackActivity.this, StudySetupActivity.class);
+                    intent.putExtra("topic", topic);
+                    intent.putExtra("studyMode", Constant.StudyMode.Quiz);
+                    intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
+                    startActivity(intent);
+                }
+            });
+        }
+
         flashcardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,11 +143,20 @@ public class FeedbackActivity extends AppCompatActivity {
         tryAgainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeedbackActivity.this, StudySetupActivity.class);
-                intent.putExtra("topic", topic);
-                intent.putExtra("studyMode", Constant.StudyMode.Quiz);
-                intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
-                startActivity(intent);
+                if(studyMode == Constant.StudyMode.Quiz){
+                    Intent intent = new Intent(FeedbackActivity.this, StudySetupActivity.class);
+                    intent.putExtra("topic", topic);
+                    intent.putExtra("studyMode", Constant.StudyMode.Quiz);
+                    intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
+                    startActivity(intent);
+                }
+                else if(studyMode == Constant.StudyMode.Typing){
+                    Intent intent = new Intent(FeedbackActivity.this, StudySetupActivity.class);
+                    intent.putExtra("topic", topic);
+                    intent.putExtra("studyMode", Constant.StudyMode.Typing);
+                    intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
+                    startActivity(intent);
+                }
             }
         });
 

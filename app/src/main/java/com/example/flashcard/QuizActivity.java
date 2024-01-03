@@ -45,9 +45,6 @@ public class QuizActivity extends AppCompatActivity {
     private boolean instantFeedback = false;
     private boolean isClickable = true;
     private Constant.StudyMode studyMode;
-    private boolean currentAnswerMode = false;
-    private ApiClient apiClient;
-    private SharedPreferences sharedPreferences;
     private int correctCount = 0;
     private int incorrectCount = 0;
     private MaterialButton answer1Btn;
@@ -119,6 +116,7 @@ public class QuizActivity extends AppCompatActivity {
                 intent.putExtra("incorrectCount", incorrectCount);
                 intent.putExtra("totalCount", totalQuestions);
                 intent.putExtra("topic", topic);
+                intent.putExtra("studyMode", studyMode);
                 intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
                 intent.putParcelableArrayListExtra("quizzesList" , new ArrayList<>(quizzesList));
                 boolean[] answersCorrectnessArray = new boolean[answersCorrectness.size()];

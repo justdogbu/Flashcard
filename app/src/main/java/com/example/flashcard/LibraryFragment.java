@@ -92,7 +92,6 @@ public class LibraryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         homeDataViewModel = new ViewModelProvider(requireActivity()).get(HomeDataViewModel.class);
         addBtn = view.findViewById(R.id.addBtn);

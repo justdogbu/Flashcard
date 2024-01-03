@@ -36,7 +36,7 @@
         android:id="@+id/termsCount"
         android:text="0 terms"
         android:textSize="16sp"
-        android:fontFamily="@font/bevietnampro_regular"
+        android:fontFamily="@font/bevietnampro_bold"
         android:textColor="@color/tertiary_text_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

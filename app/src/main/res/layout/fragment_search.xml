@@ -17,13 +17,6 @@
             android:orientation="horizontal"
             android:layout_marginHorizontal="20dp">
 
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/baseline_keyboard_backspace_24" />
-
             <EditText
                 android:layout_marginBottom="15dp"
                 android:id="@+id/searchBar"

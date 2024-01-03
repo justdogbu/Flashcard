@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.ImageButton;
 import com.example.flashcard.adapter.ChooseTopicAdapter;
 import com.example.flashcard.model.folder.AddTopicToFolderResponse;
 import com.example.flashcard.model.folder.Folder;
+import com.example.flashcard.model.topic.AddTopicToFolder;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.topic.Topics;
 import com.example.flashcard.model.topic.TopicsFormUserResponse;
@@ -57,7 +59,7 @@ public class AddTopicToFolderActivity extends AppCompatActivity {
         acceptTopicBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
+                Intent newIntent = new Intent(AddTopicToFolderActivity.this, HomeActivity.class);
                 ArrayList<Topic> arrayList = new ArrayList<>(adapter.getTopics());
                 ArrayList<Topic> chosenTopics = new ArrayList<>();
                 for (Topic topic : arrayList) {
@@ -66,9 +68,8 @@ public class AddTopicToFolderActivity extends AppCompatActivity {
                         addTopictoFolder(folder.getId(), topic.getId());
                     }
                 }
-                intent.putParcelableArrayListExtra("topics", chosenTopics);
-                setResult(RESULT_OK, intent);
-                finish();
+
+                startActivity(newIntent);
             }
         });
         chosenTopicRecyclerView = findViewById(R.id.chosenTopicRecyclerView);
@@ -86,15 +87,16 @@ public class AddTopicToFolderActivity extends AppCompatActivity {
 
         currentTopics = getIntent().getParcelableArrayListExtra("currentTopics");
 
-        Call<TopicsFormUserResponse> call = apiService.getUserTopic(currentUser.getId());
-        call.enqueue(new Callback<TopicsFormUserResponse>() {
+        Call<AddTopicToFolder> call = apiService.selectTopicToFolder(folder.getId(), currentUser.getId());
+        call.enqueue(new Callback<AddTopicToFolder>() {
             @Override
-            public void onResponse(Call<TopicsFormUserResponse> call, Response<TopicsFormUserResponse> response) {
-                TopicsFormUserResponse topicsFormUserResponse = response.body();
-                if (topicsFormUserResponse != null && "OK".equals(topicsFormUserResponse.getStatus())) {
-                    for(Topics t: topicsFormUserResponse.getData()){
-                        currentTopics.addAll(t.getAdditionalInfo());
-                    }
+            public void onResponse(Call<AddTopicToFolder> call, Response<AddTopicToFolder> response) {
+                AddTopicToFolder addTopicToFolder = response.body();
+                if (addTopicToFolder != null && "OK".equals(addTopicToFolder.getStatus())) {
+//                    for(Topics t: topicsFormUserResponse.getData()){
+//                        currentTopics.addAll(t.getAdditionalInfo());
+//                    }
+                    currentTopics = addTopicToFolder.getData();
                 }
                 adapter = new ChooseTopicAdapter(AddTopicToFolderActivity.this, currentTopics, R.layout.topic_library_item);
                 chosenTopicRecyclerView.setHasFixedSize(true);
@@ -103,7 +105,7 @@ public class AddTopicToFolderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TopicsFormUserResponse> call, Throwable t) {
+            public void onFailure(Call<AddTopicToFolder> call, Throwable t) {
 
             }
         });

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,7 @@ public class CreateTopicActivity extends AppCompatActivity {
     private SwitchMaterial publicTopicSwitch;
     private ProgressBar progressBar;
     private SharedPreferences sharedPreferences;
+    private List<Vocabulary>  vocabularyList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +72,7 @@ public class CreateTopicActivity extends AppCompatActivity {
 
         edtTitleName = findViewById(R.id.edtTitleName);
 
+        vocabularyList = new ArrayList<>();
         recyclerView = findViewById(R.id.vocabularyListView);
         edtDescription = findViewById(R.id.topicDescriptionEdt);
         publicTopicSwitch = findViewById(R.id.publicTopicSwitch);
@@ -80,9 +83,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Create topic", adapter + "");
                 adapter.addFlashcard();
-                Log.d("Create topic", adapter.getItemCount() + "");
             }
         });
 
@@ -125,8 +126,7 @@ public class CreateTopicActivity extends AppCompatActivity {
         else{
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(layoutManager);
-
-            adapter = new VocabularyAdapter(new ArrayList<>());
+            adapter = new VocabularyAdapter(vocabularyList);
             recyclerView.setAdapter(adapter);
             int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
             recyclerView.addItemDecoration(new ItemDecoration(this, spacingInPixels));

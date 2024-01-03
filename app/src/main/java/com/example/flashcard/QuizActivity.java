@@ -87,7 +87,9 @@ public class QuizActivity extends AppCompatActivity {
         for(int i = 0; i < quizzesList.size(); i++){
             answersCorrectness.add(false);
             chosenAnswers.add("");
+            Log.d("Test quiz", quizzesList.get(i).toString());
         }
+
         initView();
         showQuestion();
 
@@ -245,7 +247,7 @@ public class QuizActivity extends AppCompatActivity {
                         });
                     }
                 }
-                if(vocabulariesList.size() == 4){
+                if(vocabulariesList.size() >= 4){
                     int correctIndex = rand.nextInt(4);
                     if(correctIndex == 0){
                         answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
@@ -477,7 +479,7 @@ public class QuizActivity extends AppCompatActivity {
                         });
                     }
                 }
-                if(vocabulariesList.size() == 4){
+                if(vocabulariesList.size() >= 4){
                     int correctIndex = rand.nextInt(4);
                     if(correctIndex == 0){
                         answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());

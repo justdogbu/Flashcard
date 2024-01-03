@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager);
 
         sliderItem = new ArrayList<>();
-        sliderItem.add(new SlideItem(R.drawable.avt));
-        sliderItem.add(new SlideItem(R.drawable.image2));
-        sliderItem.add(new SlideItem(R.drawable.chemes));
-        sliderItem.add(new SlideItem(R.drawable.haha));
-        sliderItem.add(new SlideItem(R.drawable.dam));
+        sliderItem.add(new SlideItem(R.drawable.menu1));
+        sliderItem.add(new SlideItem(R.drawable.menu2));
+        sliderItem.add(new SlideItem(R.drawable.menu3));
+        sliderItem.add(new SlideItem(R.drawable.menu4));
+        sliderItem.add(new SlideItem(R.drawable.menu5));
 
         iv1 = findViewById(R.id.iv1);
         iv2 = findViewById(R.id.iv2);

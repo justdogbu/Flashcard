@@ -239,19 +239,6 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
                     setVocabulary();
                 }
                 handler.postDelayed(this, 3000);
-                if (isFront) {
-                    frontAnim.setTarget(cardFrontWordView);
-                    backAnim.setTarget(cardBackWordView);
-                    frontAnim.start();
-                    backAnim.start();
-                    isFront = false;
-                } else {
-                    backAnim.setTarget(cardFrontWordView);
-                    frontAnim.setTarget(cardBackWordView);
-                    backAnim.start();
-                    frontAnim.start();
-                    isFront = true;
-                }
                 index++;
                 setVocabulary();
             }
@@ -270,34 +257,20 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
         }
 
         if (index == 0 && isAutoPlayCard) {
-            if (language == Constant.Language.ENGLISH) {
-                if (isFrontFirst) {
-                    if (isFront) {
-                        ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    } else {
-                        ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    }
-                } else {
-                    if (isFront) {
-                        ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    } else {
-                        ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    }
-                }
+            if (isFront) {
+                frontAnim.setTarget(cardFrontWordView);
+                backAnim.setTarget(cardBackWordView);
+                frontAnim.start();
+                backAnim.start();
+                ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
+                isFront = false;
             } else {
-                if (isFrontFirst) {
-                    if (isFront) {
-                        ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    } else {
-                        ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    }
-                } else {
-                    if (isFront) {
-                        ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    } else {
-                        ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    }
-                }
+                backAnim.setTarget(cardFrontWordView);
+                frontAnim.setTarget(cardBackWordView);
+                backAnim.start();
+                frontAnim.start();
+                ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
+                isFront = true;
             }
         }
 
@@ -311,38 +284,13 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
             public void onAnimationEnd(Animator animator) {
                 isFlipping = false;
                 if (isAutoPlayAudio) {
-                    if(index < vocabularies.size()){
-                        if (language == Constant.Language.ENGLISH) {
-                            if (isFrontFirst) {
-                                if (isFront) {
-                                    ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                } else {
-                                    ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                }
-                            } else {
-                                if (isFront) {
-                                    ttsEnglish.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                } else {
-                                    ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                }
-                            }
+                    if (isFrontFirst) {
+                        if (isFront) {
+                            ttsEnglish.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
                         } else {
-                            if (isFrontFirst) {
-                                if (isFront) {
-                                    ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                } else {
-                                    ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                }
-                            } else {
-                                if (isFront) {
-                                    ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                } else {
-                                    ttsVietnamese.speak(vocabularies.get(index).getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                                }
-                            }
+                            ttsVietnamese.speak(vocabularies.get(index).getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
                         }
                     }
-
                 }
             }
 
@@ -465,38 +413,16 @@ public class FlashcardActivity extends AppCompatActivity implements TextToSpeech
         cardBackTextToSpeechBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (language == Constant.Language.ENGLISH) {
-                    if (isFrontFirst) {
-                        ttsEnglish.speak(vocabulary.getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    } else {
-                        ttsEnglish.speak(vocabulary.getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    }
-                } else {
-                    if (isFrontFirst) {
-                        ttsVietnamese.speak(vocabulary.getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    } else {
-                        ttsVietnamese.speak(vocabulary.getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                    }
-                }
+                ttsEnglish.speak(vocabulary.getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
 
-        cardFrontTextToSpeechBtn.setOnClickListener(view -> {
-            if (language == Constant.Language.ENGLISH) {
-                if (isFrontFirst) {
-                    ttsEnglish.speak(vocabulary.getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                } else {
-                    ttsEnglish.speak(vocabulary.getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                }
-            } else {
-                if (isFrontFirst) {
-                    ttsVietnamese.speak(vocabulary.getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                } else {
-                    ttsVietnamese.speak(vocabulary.getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                }
+        cardFrontTextToSpeechBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ttsVietnamese.speak(vocabulary.getMeaning(), TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
-
 
         float scale = this.getResources().getDisplayMetrics().density;
         cardFrontWordView.setCameraDistance(8000 * scale);

@@ -1,480 +1,663 @@
 package com.example.flashcard;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.tts.TextToSpeech;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-import com.example.flashcard.databinding.ActivityQuizBinding;
 import com.example.flashcard.model.quiz.Quiz;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
-import com.example.flashcard.repository.ApiService;
 import com.example.flashcard.utils.Constant;
 import com.example.flashcard.utils.Utils;
-import com.example.flashcard.viewmodel.StudyViewModel;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
-public class QuizActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
-    private ActivityQuizBinding binding;
+public class QuizActivity extends AppCompatActivity {
+    private ImageButton closeBtn;
+    private TextView quizProgressTxt;
     private Topic topic;
     private int questionCount = 1;
     private int totalQuestions = 0;
     private List<Vocabulary> vocabulariesList;
     private boolean shuffled = false;
-    private boolean answerByDefinition = false;
-    private boolean answerByVocabulary = false;
-    private boolean questionByDefinition = false;
-    private boolean questionByVocabulary = false;
-    private Constant.Language studyLanguage = Constant.Language.ENGLISH;
-    private TextToSpeech ttsVietnamese;
-    private TextToSpeech ttsEnglish;
+    private Constant.Language studyLanguage;
     private List<Quiz> quizzesList;
     private List<Boolean> answersCorrectness;
-    private List<String> chosenAnswers;
-    private List<Vocabulary> bookmarkedVocabularies;
+    private ArrayList<String> chosenAnswers;
     private boolean instantFeedback = false;
     private boolean isClickable = true;
     private Constant.StudyMode studyMode;
     private boolean currentAnswerMode = false;
-    private ApiService apiService;
+    private ApiClient apiClient;
     private SharedPreferences sharedPreferences;
-    private StudyViewModel studyViewModel;
+    private int correctCount = 0;
+    private int incorrectCount = 0;
+    private MaterialButton answer1Btn;
+
+    private MaterialButton answer2Btn;
+    private MaterialButton answer3Btn;
+    private MaterialButton answer4Btn;
+    private TextView questionTxt;
+    private Random rand;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityQuizBinding.inflate(getLayoutInflater());
-        ttsEnglish = new TextToSpeech(this, this);
-        ttsVietnamese = new TextToSpeech(this, this);
-        studyViewModel = new ViewModelProvider(this).get(StudyViewModel.class);
-        apiService = ApiClient.getClient();
-        sharedPreferences = getSharedPreferences(Constant.SHARE_PREF, MODE_PRIVATE);
-        studyLanguage = (Constant.Language) getIntent().getSerializableExtra("studyLanguage");
-        answerByDefinition = getIntent().getBooleanExtra("answerByDefinition", false);
-        answerByVocabulary = getIntent().getBooleanExtra("answerByVocabulary", false);
-        questionByDefinition = getIntent().getBooleanExtra("questionByDefinition", false);
-        questionByVocabulary = getIntent().getBooleanExtra("questionByVocabulary", false);
-        vocabulariesList = getIntent().getParcelableArrayListExtra("vocabularies");
-        totalQuestions = getIntent().getIntExtra("questionCount", 0);
-        shuffled = getIntent().getBooleanExtra("shuffleQuestion", false);
-        topic = getIntent().getParcelableExtra("topic");
-        instantFeedback = getIntent().getBooleanExtra("instantFeedBack", false);
-        studyMode = (Constant.StudyMode) getIntent().getSerializableExtra("studyMode");
-        bookmarkedVocabularies = getIntent().getParcelableArrayListExtra("bookmarkedVocabularies");
-        quizzesList = Utils.generateQuizzes(vocabulariesList, shuffled).subList(0, totalQuestions);
-        answersCorrectness = new ArrayList<>(Collections.nCopies(quizzesList.size(), false));
-        chosenAnswers = new ArrayList<>(Collections.nCopies(quizzesList.size(), ""));
+        setContentView(R.layout.activity_quiz);
+        closeBtn = findViewById(R.id.closeBtn);
+        quizProgressTxt = findViewById(R.id.quizProgressTxt);
+        questionTxt = findViewById(R.id.questionTxt);
+        answer1Btn = findViewById(R.id.answer1Btn);
+        answer2Btn = findViewById(R.id.answer2Btn);
+        answer3Btn = findViewById(R.id.answer3Btn);
+        answer4Btn = findViewById(R.id.answer4Btn);
+        Intent intent = getIntent();
+        vocabulariesList = intent.getParcelableArrayListExtra("vocabularies");
+        totalQuestions = intent.getIntExtra("questionCount", 0);
+        shuffled = intent.getBooleanExtra("shuffleQuestion", false);
+        topic = intent.getParcelableExtra("topic");
+        instantFeedback = intent.getBooleanExtra("instantFeedBack", false);
+        studyMode = (Constant.StudyMode) intent.getSerializableExtra("studyMode");
+        studyLanguage = (Constant.Language) intent.getSerializableExtra("studyLanguage");
+        rand = new Random();
 
+        closeBtn.setOnClickListener(v ->{
+            finish();
+        });
+
+        quizzesList = Utils.generateQuizzes(vocabulariesList, shuffled).subList(0, totalQuestions);
+        answersCorrectness = new ArrayList<>();
+        chosenAnswers = new ArrayList<>();
+
+        for(int i = 0; i < quizzesList.size(); i++){
+            answersCorrectness.add(false);
+            chosenAnswers.add("");
+        }
         initView();
         showQuestion();
-        binding.closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
-        ttsEnglish.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-            @Override
-            public void onUtteranceCompleted(String utteranceId) {
-                isClickable = true;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.questionTxt.setTextColor(getColor(R.color.white));
-                    }
-                });
-            }
-        });
-
-        ttsVietnamese.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-            @Override
-            public void onUtteranceCompleted(String utteranceId) {
-                isClickable = true;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.questionTxt.setTextColor(getColor(R.color.white));
-                    }
-                });
-            }
-        });
-
-        setContentView(binding.getRoot());
-    }
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = ttsEnglish.setLanguage(Locale.US);
-            if (result == TextToSpeech.LANG_MISSING_DATA) {
-                Utils.showDialog(Gravity.CENTER, "THIS LANGUAGE IS NOT SUPPORTED", this);
-            }
-            int res = ttsVietnamese.setLanguage(new Locale("vi"));
-            if (res == TextToSpeech.LANG_MISSING_DATA) {
-                Utils.showDialog(Gravity.CENTER, "THIS LANGUAGE IS NOT SUPPORTED", this);
-            }
-        } else {
-            Utils.showDialog(Gravity.CENTER, "FAILED", this);
-        }
     }
 
     private void initView() {
-        studyViewModel.startTimer();
         if (vocabulariesList.size() == 2) {
-            binding.answer4Btn.setVisibility(View.GONE);
-            binding.answer3Btn.setVisibility(View.GONE);
+            answer4Btn.setVisibility(View.GONE);
+            answer3Btn.setVisibility(View.GONE);
         } else if (vocabulariesList.size() == 3) {
-            binding.answer4Btn.setVisibility(View.GONE);
+            answer4Btn.setVisibility(View.GONE);
         } else if (vocabulariesList.size() == 1) {
-            binding.answer4Btn.setVisibility(View.GONE);
-            binding.answer3Btn.setVisibility(View.GONE);
-            binding.answer2Btn.setVisibility(View.GONE);
+            answer4Btn.setVisibility(View.GONE);
+            answer3Btn.setVisibility(View.GONE);
+            answer2Btn.setVisibility(View.GONE);
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ttsEnglish.stop();
-        ttsEnglish.shutdown();
-        ttsVietnamese.stop();
-        ttsVietnamese.shutdown();
-    }
+    private void showQuestion(){
+        quizProgressTxt.setText(questionCount + "/" + totalQuestions);
 
-    private void showQuestion() {
-        Quiz quiz = quizzesList.get(questionCount - 1);
-        binding.quizProgressTxt.setText(questionCount + "/" + totalQuestions);
-        List<Vocabulary> allAnswers;
-        if (vocabulariesList.size() >= 4) {
-            allAnswers = Arrays.asList(
-                    quiz.getCorrectAnswer(),
-                    quiz.getWrongAnswer().get(0),
-                    quiz.getWrongAnswer().get(1),
-                    quiz.getWrongAnswer().get(2)
-            );
-
-        }
-        else if (vocabulariesList.size() == 3) {
-        allAnswers = Arrays.asList(
-                quiz.getCorrectAnswer(),
-                quiz.getWrongAnswer().get(0),
-                quiz.getWrongAnswer().get(1)
-            );
-        }
-        else if (vocabulariesList.size() == 2) {
-            allAnswers = Arrays.asList(
-                    quiz.getCorrectAnswer(),
-                    quiz.getWrongAnswer().get(0)
-            );
-        } else {
-            allAnswers = Collections.singletonList(quiz.getCorrectAnswer());
-        }
-
-        List<Vocabulary> shuffledAnswers = new ArrayList<>(allAnswers);
-        Collections.shuffle(shuffledAnswers);
-
-        if (studyLanguage == Constant.Language.ENGLISH) {
-            if (questionByVocabulary && questionByDefinition) {
-                if (new Random().nextBoolean()) {
-                    currentAnswerMode = true;
-                    binding.questionTxt.setText(quiz.getCorrectAnswer().getVocabulary());
-                    binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (isClickable) {
-                                isClickable = false;
-                                binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                                ttsEnglish.speak(quiz.getCorrectAnswer().getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            }
-                        }
-                    });
-                    binding.answer1Btn.setText(shuffledAnswers.get(0).getMeaning());
-                    binding.answer2Btn.setText(shuffledAnswers.get(1).getMeaning());
-                    if (vocabulariesList.size() >= 3) {
-                        binding.answer3Btn.setText(shuffledAnswers.get(2).getMeaning());
-                    }
-                    if (vocabulariesList.size() >= 4) {
-                        binding.answer4Btn.setText(shuffledAnswers.get(3).getMeaning());
-                    }
-                } else {
-                    currentAnswerMode = false;
-                    binding.questionTxt.setText(quiz.getCorrectAnswer().getVocabulary());
-                    binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (isClickable) {
-                                isClickable = false;
-                                binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                                ttsEnglish.speak(quiz.getCorrectAnswer().getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            }
-                        }
-                    });
-                    binding.answer1Btn.setText(shuffledAnswers.get(0).getMeaning());
-                    binding.answer2Btn.setText(shuffledAnswers.get(1).getMeaning());
-                    if (vocabulariesList.size() >= 3) {
-                        binding.answer3Btn.setText(shuffledAnswers.get(2).getMeaning());
-                    }
-                    if (vocabulariesList.size() >= 4) {
-                        binding.answer4Btn.setText(shuffledAnswers.get(3).getMeaning());
-                    }
+        if(questionCount > totalQuestions){
+            if (instantFeedback){
+                Intent intent = new Intent(QuizActivity.this, FeedbackActivity.class);
+                intent.putExtra("correctCount", correctCount);
+                intent.putExtra("incorrectCount", incorrectCount);
+                intent.putExtra("totalCount", totalQuestions);
+                intent.putExtra("topic", topic);
+                intent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabulariesList));
+                intent.putParcelableArrayListExtra("quizzesList" , new ArrayList<>(quizzesList));
+                boolean[] answersCorrectnessArray = new boolean[answersCorrectness.size()];
+                for (int i = 0; i < answersCorrectness.size(); i++) {
+                    answersCorrectnessArray[i] = answersCorrectness.get(i);
                 }
-            } else if (questionByDefinition) {
-                binding.questionTxt.setText(quiz.getCorrectAnswer().getVocabulary());
-                binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isClickable) {
-                            isClickable = false;
-                            binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                            ttsEnglish.speak(quiz.getCorrectAnswer().getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                        }
-                    }
-                });
-                binding.answer1Btn.setText(shuffledAnswers.get(0).getMeaning());
-                binding.answer2Btn.setText(shuffledAnswers.get(1).getMeaning());
-                if (vocabulariesList.size() >= 3) {
-                    binding.answer3Btn.setText(shuffledAnswers.get(2).getMeaning());
-                }
-                if (vocabulariesList.size() >= 4) {
-                    binding.answer4Btn.setText(shuffledAnswers.get(3).getMeaning());
-                }
-            } else if (questionByVocabulary) {
-                binding.questionTxt.setText(quiz.getCorrectAnswer().getVocabulary());
-                binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isClickable) {
-                            isClickable = false;
-                            binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                            ttsEnglish.speak(quiz.getCorrectAnswer().getVocabulary(), TextToSpeech.QUEUE_FLUSH, null, "");
-                        }
-                    }
-                });
-                binding.answer1Btn.setText(shuffledAnswers.get(0).getMeaning());
-                binding.answer2Btn.setText(shuffledAnswers.get(1).getMeaning());
-                if (vocabulariesList.size() >= 3) {
-                    binding.answer3Btn.setText(shuffledAnswers.get(2).getMeaning());
-                }
-                if (vocabulariesList.size() >= 4) {
-                    binding.answer4Btn.setText(shuffledAnswers.get(3).getMeaning());
-                }
+                intent.putExtra("answersCorrectness", answersCorrectnessArray);
+                intent.putStringArrayListExtra("chosenAnswers", chosenAnswers);
+                startActivity(intent);
             }
-        } else {
-            if (questionByDefinition && questionByVocabulary) {
-                if (new Random().nextBoolean()) {
-                    currentAnswerMode = true;
-                    binding.questionTxt.setText(quiz.getCorrectAnswer().getMeaning());
-                    binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (isClickable) {
-                                isClickable = false;
-                                binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                                ttsVietnamese.speak(quiz.getCorrectAnswer().getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            }
-                        }
-                    });
-                    binding.answer1Btn.setText(shuffledAnswers.get(0).getVocabulary());
-                    binding.answer2Btn.setText(shuffledAnswers.get(1).getVocabulary());
-                    if (vocabulariesList.size() >= 3) {
-                        binding.answer3Btn.setText(shuffledAnswers.get(2).getVocabulary());
-                    }
-                    if (vocabulariesList.size() >= 4) {
-                        binding.answer4Btn.setText(shuffledAnswers.get(3).getVocabulary());
-                    }
-                } else {
-                    currentAnswerMode = false;
-                    binding.questionTxt.setText(quiz.getCorrectAnswer().getMeaning());
-                    binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (isClickable) {
-                                isClickable = false;
-                                binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                                ttsVietnamese.speak(quiz.getCorrectAnswer().getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                            }
-                        }
-                    });
-                    binding.answer1Btn.setText(shuffledAnswers.get(0).getVocabulary());
-                    binding.answer2Btn.setText(shuffledAnswers.get(1).getVocabulary());
-                    if (vocabulariesList.size() >= 3) {
-                        binding.answer3Btn.setText(shuffledAnswers.get(2).getVocabulary());
-                    }
-                    if (vocabulariesList.size() >= 4) {
-                        binding.answer4Btn.setText(shuffledAnswers.get(3).getVocabulary());
-                    }
-                }
-            } else if (questionByDefinition) {
-                binding.questionTxt.setText(quiz.getCorrectAnswer().getMeaning());
-                binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isClickable) {
-                            isClickable = false;
-                            binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                            ttsVietnamese.speak(quiz.getCorrectAnswer().getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                        }
-                    }
-                });
-                binding.answer1Btn.setText(shuffledAnswers.get(0).getVocabulary());
-                binding.answer2Btn.setText(shuffledAnswers.get(1).getVocabulary());
-                if (vocabulariesList.size() >= 3) {
-                    binding.answer3Btn.setText(shuffledAnswers.get(2).getVocabulary());
-                }
-                if (vocabulariesList.size() >= 4) {
-                    binding.answer4Btn.setText(shuffledAnswers.get(3).getVocabulary());
-                }
-            } else if (questionByVocabulary) {
-                binding.questionTxt.setText(quiz.getCorrectAnswer().getMeaning());
-                binding.questionTxt.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isClickable) {
-                            isClickable = false;
-                            binding.questionTxt.setTextColor(getColor(R.color.secondary_color));
-                            ttsVietnamese.speak(quiz.getCorrectAnswer().getMeaning(), TextToSpeech.QUEUE_FLUSH, null, "");
-                        }
-                    }
-                });
-                binding.answer1Btn.setText(shuffledAnswers.get(0).getVocabulary());
-                binding.answer2Btn.setText(shuffledAnswers.get(1).getVocabulary());
-                if (vocabulariesList.size() >= 3) {
-                    binding.answer3Btn.setText(shuffledAnswers.get(2).getVocabulary());
-                }
-                if (vocabulariesList.size() >= 4) {
-                    binding.answer4Btn.setText(shuffledAnswers.get(3).getVocabulary());
-                }
+            else{
+                finish();
             }
         }
-        List<Button> btnList = Arrays.asList(
-                binding.answer1Btn,
-                binding.answer2Btn,
-                binding.answer3Btn,
-                binding.answer4Btn
-        );
-
-        for (Button btn : btnList) {
-            btn.setEnabled(true);
-            btn.setClickable(true);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Vocabulary correct = shuffledAnswers.get(shuffledAnswers.indexOf(quiz.getCorrectAnswer()));
-                    chosenAnswers.set(questionCount - 1, btn.getText().toString());
-
-                    if (instantFeedback) {
-                        runOnUiThread(new Runnable() {
+        else{
+            String question = studyLanguage == Constant.Language.ENGLISH ?
+                    quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary() :
+                    quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning();
+            questionTxt.setText(question);
+            List<Vocabulary> wrongList = quizzesList.get(questionCount - 1).getWrongAnswer();
+            if(studyLanguage == Constant.Language.ENGLISH){
+                if(vocabulariesList.size() == 2){
+                    int correctIndex = rand.nextInt(2);
+                    if(correctIndex == 0){
+                        answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void run() {
-                                for (Button btn : btnList) {
-                                    btn.setEnabled(false);
-                                    btn.setClickable(false);
-                                }
-
-                                if (studyLanguage == Constant.Language.ENGLISH) {
-                                    if (questionByDefinition && questionByVocabulary) {
-                                        if (currentAnswerMode) {
-                                            Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getMeaning() : "", btn.getText().toString());
-                                        } else {
-                                            Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getMeaning() : "", btn.getText().toString());
-                                        }
-                                    } else if (questionByDefinition) {
-                                        Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getMeaning() : "", btn.getText().toString());
-                                    } else if (questionByVocabulary) {
-                                        Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getMeaning() : "", btn.getText().toString());
-                                    }
-                                } else {
-                                    if (questionByDefinition && questionByVocabulary) {
-                                        if (currentAnswerMode) {
-                                            Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getVocabulary() : "", btn.getText().toString());
-                                        } else {
-                                            Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getVocabulary() : "", btn.getText().toString());
-                                        }
-                                    } else if (questionByDefinition) {
-                                        Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getVocabulary() : "", btn.getText().toString());
-                                    } else if (questionByVocabulary) {
-                                        Utils.propWrongAnswer(getApplicationContext(), correct != null ? correct.getVocabulary() : "", btn.getText().toString());
-                                    }
-                                }
-
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                questionCount++;
-                                                showQuestion();
-                                            }
-                                        });
-                                    }
-                                }, 1000);
+                            public void onClick(View v) {
+                                showCorrectDialog();
                             }
                         });
-                    } else {
-                        runOnUiThread(new Runnable() {
+                        answer2Btn.setText(wrongList.get(0).getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void run() {
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                questionCount++;
-                                                showQuestion();
-                                            }
-                                        });
-                                    }
-                                }, 0);
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else{
+                        answer2Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(rand.nextInt(wrongList.size() - 1)).getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer1Btn.getText().toString());
                             }
                         });
                     }
                 }
-            });
-        }
+                if(vocabulariesList.size() == 3){
+                    int correctIndex = rand.nextInt(3);
+                    if(correctIndex == 0){
+                        answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(0).getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 1){
+                        answer2Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else{
+                        answer3Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(1).getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                    }
+                }
+                if(vocabulariesList.size() == 4){
+                    int correctIndex = rand.nextInt(4);
+                    if(correctIndex == 0){
+                        answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(0).getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                        answer4Btn.setText(wrongList.get(2).getMeaning());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer4Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 1){
+                        answer2Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                        answer4Btn.setText(wrongList.get(2).getMeaning());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer4Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 2){
+                        answer3Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(1).getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer4Btn.setText(wrongList.get(2).getMeaning());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer4Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 3){
+                        answer4Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getMeaning());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer4Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(1).getMeaning());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer4Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(2).getMeaning());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer4Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                    }
+                }
+            }
+            else{
+                if(vocabulariesList.size() == 2){
+                    int correctIndex = rand.nextInt(2);
+                    if(correctIndex == 0){
+                        answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(0).getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else{
+                        answer2Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(rand.nextInt(wrongList.size() - 1)).getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                    }
+                }
+                if(vocabulariesList.size() == 3){
+                    int correctIndex = rand.nextInt(3);
+                    if(correctIndex == 0){
+                        answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(0).getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 1){
+                        answer2Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else{
+                        answer3Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(1).getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                    }
+                }
+                if(vocabulariesList.size() == 4){
+                    int correctIndex = rand.nextInt(4);
+                    if(correctIndex == 0){
+                        answer1Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(0).getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                        answer4Btn.setText(wrongList.get(2).getVocabulary());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer1Btn.getText().toString(), answer4Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 1){
+                        answer2Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(1).getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                        answer4Btn.setText(wrongList.get(2).getVocabulary());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer2Btn.getText().toString(), answer4Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 2){
+                        answer3Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(1).getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer4Btn.setText(wrongList.get(2).getVocabulary());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer3Btn.getText().toString(), answer4Btn.getText().toString());
+                            }
+                        });
+                    }
+                    else if(correctIndex == 3){
+                        answer4Btn.setText(quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                        answer4Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showCorrectDialog();
+                            }
+                        });
+                        answer1Btn.setText(wrongList.get(0).getVocabulary());
+                        answer1Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer4Btn.getText().toString(), answer1Btn.getText().toString());
+                            }
+                        });
+                        answer2Btn.setText(wrongList.get(1).getVocabulary());
+                        answer2Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer4Btn.getText().toString(), answer2Btn.getText().toString());
+                            }
+                        });
+                        answer3Btn.setText(wrongList.get(2).getVocabulary());
+                        answer3Btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showWrongDialog(answer4Btn.getText().toString(), answer3Btn.getText().toString());
+                            }
+                        });
+                    }
+                }
+            }
 
-        btnList.get(shuffledAnswers.indexOf(quiz.getCorrectAnswer())).setOnClickListener(new View.OnClickListener() {
+        }
+    }
+    private void showCorrectDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.success_answer_dialog);
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                chosenAnswers.set(questionCount - 1, btnList.get(shuffledAnswers.indexOf(quiz.getCorrectAnswer())).getText().toString());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        answersCorrectness.set(questionCount - 1, true);
-                        if (instantFeedback) {
-                            Utils.propCorrectAnswer(getApplicationContext());
-                        }
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        questionCount++;
-                                        showQuestion();
-                                    }
-                                });
-                            }
-                        }, instantFeedback ? 1000 : 0);
-                    }
-                });
+            public void run() {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                    answersCorrectness.set(questionCount - 1, true);
+                    chosenAnswers.set(questionCount - 1, studyLanguage == Constant.Language.ENGLISH ?
+                            quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning() :
+                            quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                    correctCount++;
+                    questionCount++;
+                    showQuestion();
+                }
             }
-        });
+        }, 2000);
+    }
+
+    private void showWrongDialog(String correct, String yourAnswer) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.wrong_answer_dialog);
+        TextView chosenWrongAnswerTxt = dialog.findViewById(R.id.chosenWrongAnswerTxt);
+        TextView correctAnswerTxt = dialog.findViewById(R.id.correctAnswerTxt);
+
+        chosenWrongAnswerTxt.setText(yourAnswer);
+        correctAnswerTxt.setText(correct);
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                    chosenAnswers.set(questionCount - 1, yourAnswer);
+                    incorrectCount++;
+                    questionCount++;
+                    showQuestion();
+                }
+            }
+        }, 2000);
     }
 }

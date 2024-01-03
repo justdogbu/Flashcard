@@ -38,7 +38,6 @@ import java.util.List;
 public class StudySetupActivity extends AppCompatActivity implements PromptOptionsListener {
     private TextView topicName;
     private EditText questionCountEdt;
-    private ImageButton promptOptionBtn;
     private SwitchMaterial shuffleQuestionSwitch;
     private SwitchMaterial instantFeedBackSwitch;
     private TextView questionCountTxt;
@@ -60,7 +59,6 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
 
         topicName = findViewById(R.id.topicName);
         questionCountEdt = findViewById(R.id.questionCountEdt);
-        promptOptionBtn = findViewById(R.id.promptOptionBtn);
         shuffleQuestionSwitch = findViewById(R.id.shuffleQuestionSwitch);
         instantFeedBackSwitch = findViewById(R.id.instantFeedBackSwitch);
         questionCountTxt = findViewById(R.id.questionCountTxt);
@@ -130,19 +128,6 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
             }
         });
 
-        promptOptionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QuizPromptBottom quizPromptBottomu = new QuizPromptBottom();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("answerByMeaning", answerByMeaning);
-                bundle.putBoolean("answerByVocabulary", answerByVocabulary);
-                bundle.putBoolean("questionByMeaning", questionByMeaning);
-                bundle.putBoolean("questionByVocabulary", questionByVocabulary);
-                quizPromptBottomu.setArguments(bundle);
-                quizPromptBottomu.show(getSupportFragmentManager(), "PromptTypeBottomSheet");
-            }
-        });
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,31 +135,27 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
                 if (studyMode == Constant.StudyMode.Quiz) {
                     Intent quizIntent = new Intent(StudySetupActivity.this, QuizActivity.class);
                     boolean shuffleQuestion = shuffleQuestionSwitch.isChecked();
+                    boolean instanceFeedBack = instantFeedBackSwitch.isChecked();
+
                     quizIntent.putExtra("topic", topic);
                     quizIntent.putExtra("studyLanguage", studyLanguage);
                     quizIntent.putExtra("questionCount", questionCountEdt.getText().toString().isEmpty() ? vocabularies.size() : Integer.parseInt(questionCountEdt.getText().toString()));
                     quizIntent.putExtra("shuffleQuestion", shuffleQuestion);
-                    quizIntent.putExtra("answerByMeaning", answerByMeaning);
-                    quizIntent.putExtra("answerByVocabulary", answerByVocabulary);
-                    quizIntent.putExtra("questionByMeaning", questionByMeaning);
-                    quizIntent.putExtra("questionByVocabulary", questionByVocabulary);
                     quizIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
-                    quizIntent.putExtra("instantFeedBack", instantFeedBackSwitch.isChecked());
+                    quizIntent.putExtra("instantFeedBack", instanceFeedBack);
                     quizIntent.putExtra("studyMode", studyMode);
                     startActivity(quizIntent);
                 } else if (studyMode == Constant.StudyMode.Typing) {
                     Intent typingIntent = new Intent(StudySetupActivity.this, TypingActivity.class);
                     boolean shuffleQuestion = shuffleQuestionSwitch.isChecked();
+                    boolean instanceFeedBack = instantFeedBackSwitch.isChecked();
+
                     typingIntent.putExtra("topic", topic);
                     typingIntent.putExtra("studyLanguage", studyLanguage);
                     typingIntent.putExtra("questionCount", questionCountEdt.getText().toString().isEmpty() ? vocabularies.size() : Integer.parseInt(questionCountEdt.getText().toString()));
                     typingIntent.putExtra("shuffleQuestion", shuffleQuestion);
-                    typingIntent.putExtra("answerByMeaning", answerByMeaning);
-                    typingIntent.putExtra("answerByVocabulary", answerByVocabulary);
-                    typingIntent.putExtra("questionByMeaning", questionByMeaning);
-                    typingIntent.putExtra("questionByVocabulary", questionByVocabulary);
                     typingIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
-                    typingIntent.putExtra("instantFeedBack", instantFeedBackSwitch.isChecked());
+                    typingIntent.putExtra("instantFeedBack", instanceFeedBack);
                     typingIntent.putExtra("studyMode", studyMode);
                     startActivity(typingIntent);
                 }
@@ -202,7 +183,7 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
             startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
         } else {
             startBtn.setEnabled(true);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_login_btn));
+            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
         }
     }
 }

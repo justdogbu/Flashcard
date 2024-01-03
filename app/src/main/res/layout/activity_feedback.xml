@@ -133,17 +133,19 @@
         </LinearLayout>
 
         <TextView
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Next Steps"
+            android:textSize="18sp"
             android:textColor="@color/tertiary_text_color"
+            android:fontFamily="@font/bevietnampro_bold"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="50dp"
+            android:text="Next Steps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             app:backgroundTint="@null"
             android:background="@drawable/ripple_login_btn"
             android:textColor="@color/white"
@@ -157,7 +159,21 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
+            app:backgroundTint="@null"
+            android:background="@drawable/ripple_login_btn"
+            android:textColor="@color/white"
+            android:text="Learn by Quiz Or Typing"
+            app:icon="@drawable/quiz"
+            android:id="@+id/learnByQuizOrTyping"
+            app:iconTint="@null"
+            app:iconSize="40dp"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
             app:backgroundTint="@null"
             android:id="@+id/tryAgainBtn"
             android:background="@drawable/ripple_login_transparent_btn"
@@ -172,7 +188,7 @@
             android:textSize="18sp"
             android:fontFamily="@font/bevietnampro_bold"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:text="Your answers"
             android:textColor="@color/tertiary_text_color"
             android:layout_width="wrap_content"
@@ -181,7 +197,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/answerRecyclerView"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:nestedScrollingEnabled="false"
             android:layout_height="wrap_content"/>
     </LinearLayout>

@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <ImageView
-            android:src="@drawable/quiz"
+            android:src="@drawable/test"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
     </LinearLayout>
@@ -73,7 +73,7 @@
             android:id="@+id/questionCountEdt"
             android:background="@drawable/edit_text"
             android:layout_weight="0.2"
-            android:hint="20"
+            android:hint="0"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:textAlignment="textEnd"

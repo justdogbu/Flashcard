@@ -35,7 +35,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudySetupActivity extends AppCompatActivity implements PromptOptionsListener {
+public class StudySetupActivity extends AppCompatActivity {
     private TextView topicName;
     private EditText questionCountEdt;
     private SwitchMaterial shuffleQuestionSwitch;
@@ -46,10 +46,7 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
     private List<Vocabulary> vocabularies;
     private Constant.StudyMode studyMode;
     private Constant.Language studyLanguage = Constant.Language.ENGLISH;
-    private boolean answerByMeaning = true;
-    private boolean answerByVocabulary = true;
-    private boolean questionByMeaning = true;
-    private boolean questionByVocabulary = true;
+
     private ImageButton closeBtn;
     private MaterialButton startBtn;
     @Override
@@ -163,27 +160,4 @@ public class StudySetupActivity extends AppCompatActivity implements PromptOptio
         });
     }
 
-    @Override
-    public void onChoosingOption(boolean answerByMeaning, boolean answerByVocabulary, boolean questionByMeaning, boolean questionByVocabulary) {
-        this.answerByMeaning = answerByMeaning;
-        this.answerByVocabulary = answerByVocabulary;
-        this.questionByMeaning = questionByMeaning;
-        this.questionByVocabulary = questionByVocabulary;
-        if (!answerByMeaning && !answerByVocabulary) {
-            startBtn.setEnabled(false);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
-        } else if (!questionByMeaning && !questionByVocabulary) {
-            startBtn.setEnabled(false);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
-        } else if (answerByMeaning && questionByMeaning && !answerByVocabulary && !questionByVocabulary) {
-            startBtn.setEnabled(false);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
-        } else if (answerByVocabulary && questionByVocabulary && !answerByMeaning && !questionByMeaning) {
-            startBtn.setEnabled(false);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
-        } else {
-            startBtn.setEnabled(true);
-            startBtn.setBackground(getDrawable(R.drawable.ripple_signup_btn));
-        }
-    }
 }

@@ -7,6 +7,8 @@ public class Constant {
     public static final String SHARE_PREF = "SHAREDPREFKEY";
     public static final int PICK_IMAGE_REQUEST = 111;
     public static final int PICK_IMAGE_INTENT = 222;
+    public static final int ADD_TOPIC_TO_FOLDER = 333;
+
     public static final float MAX_SCALE = 1f;
     public static final float SCALE_PERCENT = 0.8f;
     public static final float MIN_SCALE = SCALE_PERCENT * MAX_SCALE;

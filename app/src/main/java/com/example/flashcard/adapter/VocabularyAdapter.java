@@ -111,6 +111,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vi
 
             }
         });
+
     }
 
     @Override
@@ -120,7 +121,7 @@ public class VocabularyAdapter extends RecyclerView.Adapter<VocabularyAdapter.Vi
 
     public void addFlashcard() {
         vocabs.add(new Vocabulary(0, "","", new ArrayList<>(), new ArrayList<>()));
-        notifyDataSetChanged();
+        notifyItemInserted(vocabs.size() - 1);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

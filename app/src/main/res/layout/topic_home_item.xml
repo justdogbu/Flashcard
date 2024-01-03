@@ -36,7 +36,7 @@
         android:layout_marginTop="5dp"
         android:id="@+id/termsCount"
         android:text="0 vocabularies"
-        android:fontFamily="@font/bevietnampro_medium"
+        android:fontFamily="@font/bevietnampro_bold"
         android:textSize="16sp"
         android:textColor="@color/tertiary_text_color"
         android:layout_width="wrap_content"

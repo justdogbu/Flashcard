@@ -196,7 +196,6 @@ public class TopicActivity extends AppCompatActivity implements TextToSpeech.OnI
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.topic_bottom_sheet);
 
-        MaterialButton addTopicToFolderBtn = dialog.findViewById(R.id.addTopicToFolderBtn);
         MaterialButton editTopicBtn = dialog.findViewById(R.id.editTopicBtn);
         MaterialButton deleteTopicBtn = dialog.findViewById(R.id.deleteTopicBtn);
 

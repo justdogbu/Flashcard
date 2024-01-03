@@ -7,6 +7,8 @@ import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -89,10 +91,8 @@ public class SearchFragment extends Fragment implements CustomOnItemClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         searchBar = view.findViewById(R.id.searchBar);
-        backButton = view.findViewById(R.id.backButton);
         publicTopicRecyclerView = view.findViewById(R.id.publicTopicRecyclerView);
         initVM();
         homeDataViewModel.getPublicTopicsList().observe(getViewLifecycleOwner(), topicList -> {

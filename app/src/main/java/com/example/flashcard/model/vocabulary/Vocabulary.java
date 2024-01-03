@@ -125,4 +125,12 @@ public class Vocabulary implements Parcelable {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return "Vocabulary{" +
+                "id=" + id +
+                ", vocabulary='" + vocabulary + '\'' +
+                ", meaning='" + meaning + '\'' +
+                '}';
+    }
 }

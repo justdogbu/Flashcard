@@ -54,4 +54,11 @@ public class Quiz implements Parcelable {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "correctAnswer=" + correctAnswer +
+                ", wrongAnswer=" + wrongAnswer +
+                '}';
+    }
 }

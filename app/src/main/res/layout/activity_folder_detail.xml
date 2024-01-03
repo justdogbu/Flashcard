@@ -56,13 +56,15 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content">
+
             <TextView
-                android:textSize="16sp"
-                android:textColor="@color/tertiary_text_color"
-                android:text="Count"
                 android:id="@+id/folderTopicCount"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="Count"
+                android:fontFamily="@font/bevietnampro_bold"
+                android:textColor="@color/tertiary_text_color"
+                android:textSize="16sp" />
             <TextView
                 android:layout_marginTop="15dp"
                 android:textSize="20sp"

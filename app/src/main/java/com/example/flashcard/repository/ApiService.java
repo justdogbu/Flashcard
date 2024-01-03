@@ -1,8 +1,11 @@
 package com.example.flashcard.repository;
 
 import com.example.flashcard.model.folder.AddTopicToFolderResponse;
+import com.example.flashcard.model.folder.DeleteFolder;
+import com.example.flashcard.model.folder.DeleteFolderDetail;
 import com.example.flashcard.model.folder.FolderResponse;
 import com.example.flashcard.model.folder.FoldersFormUserResponse;
+import com.example.flashcard.model.topic.AddTopicToFolder;
 import com.example.flashcard.model.topic.DeleteTopic;
 import com.example.flashcard.model.topic.PublicTopicResponse;
 import com.example.flashcard.model.topic.TopicDetailResponse;
@@ -137,5 +140,25 @@ public interface ApiService {
     @POST("get_Topic_Folder.php")
     Call<TopicFromFolderResponse> selectTopicFolder(
             @Field("folderID") int folderID
+    );
+
+    @FormUrlEncoded
+    @POST("deleteFolder.php")
+    Call<DeleteFolder> deleteFolder(
+            @Field("folderID") int folderID
+    );
+
+    @FormUrlEncoded
+    @POST("deleteFolderDetail.php")
+    Call<DeleteFolderDetail> deleteFolderDetail(
+            @Field("folderID") int folderID
+    );
+
+    @FormUrlEncoded
+    @POST("topic_not_exist_folder.php")
+    Call<AddTopicToFolder> selectTopicToFolder(
+            @Field("folderID") int folderID,
+            @Field("userID") int userID
+
     );
 }

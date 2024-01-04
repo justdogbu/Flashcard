@@ -40,6 +40,8 @@ public class StudySetupActivity extends AppCompatActivity {
     private EditText questionCountEdt;
     private SwitchMaterial shuffleQuestionSwitch;
     private SwitchMaterial instantFeedBackSwitch;
+    private SwitchMaterial imageSwitch;
+
     private TextView questionCountTxt;
     private Spinner languageSpinner;
     private Topic topic;
@@ -58,6 +60,7 @@ public class StudySetupActivity extends AppCompatActivity {
         questionCountEdt = findViewById(R.id.questionCountEdt);
         shuffleQuestionSwitch = findViewById(R.id.shuffleQuestionSwitch);
         instantFeedBackSwitch = findViewById(R.id.instantFeedBackSwitch);
+        imageSwitch = findViewById(R.id.imageSwitch);
         questionCountTxt = findViewById(R.id.questionCountTxt);
         languageSpinner = findViewById(R.id.languageSpinner);
         closeBtn = findViewById(R.id.closeBtn);
@@ -133,6 +136,7 @@ public class StudySetupActivity extends AppCompatActivity {
                     Intent quizIntent = new Intent(StudySetupActivity.this, QuizActivity.class);
                     boolean shuffleQuestion = shuffleQuestionSwitch.isChecked();
                     boolean instanceFeedBack = instantFeedBackSwitch.isChecked();
+                    boolean image = imageSwitch.isChecked();
 
                     quizIntent.putExtra("topic", topic);
                     quizIntent.putExtra("studyLanguage", studyLanguage);
@@ -140,12 +144,14 @@ public class StudySetupActivity extends AppCompatActivity {
                     quizIntent.putExtra("shuffleQuestion", shuffleQuestion);
                     quizIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
                     quizIntent.putExtra("instantFeedBack", instanceFeedBack);
+                    quizIntent.putExtra("image", image);
                     quizIntent.putExtra("studyMode", studyMode);
                     startActivity(quizIntent);
                 } else if (studyMode == Constant.StudyMode.Typing) {
                     Intent typingIntent = new Intent(StudySetupActivity.this, TypingActivity.class);
                     boolean shuffleQuestion = shuffleQuestionSwitch.isChecked();
                     boolean instanceFeedBack = instantFeedBackSwitch.isChecked();
+                    boolean image = imageSwitch.isChecked();
 
                     typingIntent.putExtra("topic", topic);
                     typingIntent.putExtra("studyLanguage", studyLanguage);
@@ -153,6 +159,7 @@ public class StudySetupActivity extends AppCompatActivity {
                     typingIntent.putExtra("shuffleQuestion", shuffleQuestion);
                     typingIntent.putParcelableArrayListExtra("vocabularies", new ArrayList<>(vocabularies));
                     typingIntent.putExtra("instantFeedBack", instanceFeedBack);
+                    typingIntent.putExtra("image", image);
                     typingIntent.putExtra("studyMode", studyMode);
                     startActivity(typingIntent);
                 }

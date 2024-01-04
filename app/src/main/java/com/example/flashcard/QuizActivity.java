@@ -227,7 +227,7 @@ public class QuizActivity extends AppCompatActivity {
                                 showCorrectDialog();
                             }
                         });
-                        answer1Btn.setText(wrongList.get(rand.nextInt(wrongList.size() - 1)).getMeaning());
+                        answer1Btn.setText(wrongList.get(0).getMeaning());
                         answer1Btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -459,7 +459,7 @@ public class QuizActivity extends AppCompatActivity {
                                 showCorrectDialog();
                             }
                         });
-                        answer1Btn.setText(wrongList.get(rand.nextInt(wrongList.size() - 1)).getVocabulary());
+                        answer1Btn.setText(wrongList.get(0).getVocabulary());
                         answer1Btn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

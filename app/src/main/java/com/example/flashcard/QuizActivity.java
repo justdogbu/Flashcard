@@ -16,13 +16,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.flashcard.model.quiz.Quiz;
 import com.example.flashcard.model.topic.Topic;
 import com.example.flashcard.model.vocabulary.Vocabulary;
 import com.example.flashcard.repository.ApiClient;
+import com.example.flashcard.repository.ApiService;
+import com.example.flashcard.repository.UnsplashApiClient;
+import com.example.flashcard.repository.UnsplashApiService;
 import com.example.flashcard.utils.Constant;
+import com.example.flashcard.utils.UnsplashResponse;
 import com.example.flashcard.utils.Utils;
 import com.google.android.material.button.MaterialButton;
 
@@ -30,7 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class QuizActivity extends AppCompatActivity {
+    private UnsplashApiService apiService;
     private ImageButton closeBtn;
     private TextView quizProgressTxt;
     private Topic topic;
@@ -43,6 +54,8 @@ public class QuizActivity extends AppCompatActivity {
     private List<Boolean> answersCorrectness;
     private ArrayList<String> chosenAnswers;
     private boolean instantFeedback = false;
+    private boolean image = false;
+
     private boolean isClickable = true;
     private Constant.StudyMode studyMode;
     private int correctCount = 0;
@@ -54,11 +67,15 @@ public class QuizActivity extends AppCompatActivity {
     private MaterialButton answer4Btn;
     private TextView questionTxt;
     private Random rand;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
+        apiService = UnsplashApiClient.getRetrofitInstance().create(UnsplashApiService.class);
+
         closeBtn = findViewById(R.id.closeBtn);
         quizProgressTxt = findViewById(R.id.quizProgressTxt);
         questionTxt = findViewById(R.id.questionTxt);
@@ -66,12 +83,14 @@ public class QuizActivity extends AppCompatActivity {
         answer2Btn = findViewById(R.id.answer2Btn);
         answer3Btn = findViewById(R.id.answer3Btn);
         answer4Btn = findViewById(R.id.answer4Btn);
+        imageView = findViewById(R.id.imageView);
         Intent intent = getIntent();
         vocabulariesList = intent.getParcelableArrayListExtra("vocabularies");
         totalQuestions = intent.getIntExtra("questionCount", 0);
         shuffled = intent.getBooleanExtra("shuffleQuestion", false);
         topic = intent.getParcelableExtra("topic");
         instantFeedback = intent.getBooleanExtra("instantFeedBack", false);
+        image = intent.getBooleanExtra("image", false);
         studyMode = (Constant.StudyMode) intent.getSerializableExtra("studyMode");
         studyLanguage = (Constant.Language) intent.getSerializableExtra("studyLanguage");
         rand = new Random();
@@ -87,7 +106,6 @@ public class QuizActivity extends AppCompatActivity {
         for(int i = 0; i < quizzesList.size(); i++){
             answersCorrectness.add(false);
             chosenAnswers.add("");
-            Log.d("Test quiz", quizzesList.get(i).toString());
         }
 
         initView();
@@ -134,10 +152,52 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
         else{
-            String question = studyLanguage == Constant.Language.ENGLISH ?
-                    quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary() :
-                    quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning();
-            questionTxt.setText(question);
+            if(image){
+                Call<UnsplashResponse> call = apiService.searchPhotos(Constant.UNSPLASH_API_KEY, quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                Log.d("TEST TAG", Constant.UNSPLASH_API_KEY + " " + quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary());
+                call.enqueue(new Callback<UnsplashResponse>() {
+                    @Override
+                    public void onResponse(Call<UnsplashResponse> call, Response<UnsplashResponse> response) {
+                        Log.d("image", response.toString());
+                        if (response.isSuccessful() && response.body() != null && response.body().getResults().size() > 0) {
+                            String imageUrl = response.body().getResults().get(0).getUrls().getRegular();
+                            imageView.setVisibility(View.VISIBLE);
+                            questionTxt.setVisibility(View.GONE);
+                            Glide.with(QuizActivity.this)
+                                    .load(imageUrl)
+                                    .into(imageView);
+                        }
+                        else{
+                            imageView.setVisibility(View.GONE);
+                            questionTxt.setVisibility(View.VISIBLE);
+                            String question = studyLanguage == Constant.Language.ENGLISH ?
+                                    quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary() :
+                                    quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning();
+                            questionTxt.setText(question);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UnsplashResponse> call, Throwable t) {
+                        imageView.setVisibility(View.GONE);
+                        questionTxt.setVisibility(View.VISIBLE);
+                        String question = studyLanguage == Constant.Language.ENGLISH ?
+                                quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary() :
+                                quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning();
+                        questionTxt.setText(question);
+                        Log.d("Test image 2", t.getMessage());
+
+                    }
+                });
+            }
+            else{
+                imageView.setVisibility(View.GONE);
+                questionTxt.setVisibility(View.VISIBLE);
+                String question = studyLanguage == Constant.Language.ENGLISH ?
+                        quizzesList.get(questionCount - 1).getCorrectAnswer().getVocabulary() :
+                        quizzesList.get(questionCount - 1).getCorrectAnswer().getMeaning();
+                questionTxt.setText(question);
+            }
             List<Vocabulary> wrongList = quizzesList.get(questionCount - 1).getWrongAnswer();
             if(studyLanguage == Constant.Language.ENGLISH){
                 if(vocabulariesList.size() == 2){

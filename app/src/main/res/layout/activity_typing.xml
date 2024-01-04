@@ -42,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <TextView
+            android:visibility="visible"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -52,8 +53,17 @@
             android:clickable="true"
             android:textStyle="bold"
             android:text="Test"
-            android:textColor="@color/white"
-            />
+            android:textColor="@color/white" />
+        <ImageView
+            android:visibility="gone"
+            android:padding="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:src="@drawable/chemes"/>
+
     </LinearLayout>
 
     <FrameLayout

@@ -20,11 +20,15 @@ import com.example.flashcard.model.user.UserFromTopicResponse;
 import com.example.flashcard.model.vocabulary.DeleteVocabularyResponse;
 import com.example.flashcard.model.vocabulary.VocabulariesFromTopicResponse;
 import com.example.flashcard.model.vocabulary.VocabularyResponse;
+import com.example.flashcard.utils.UnsplashResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
+
 public interface ApiService {
     @FormUrlEncoded
     @POST("login.php")

@@ -160,7 +160,8 @@ public class QuizActivity extends AppCompatActivity {
                     public void onResponse(Call<UnsplashResponse> call, Response<UnsplashResponse> response) {
                         Log.d("image", response.toString());
                         if (response.isSuccessful() && response.body() != null && response.body().getResults().size() > 0) {
-                            String imageUrl = response.body().getResults().get(0).getUrls().getRegular();
+                            int randomImageIndex = rand.nextInt(response.body().getResults().size());
+                            String imageUrl = response.body().getResults().get(randomImageIndex).getUrls().getRegular();
                             imageView.setVisibility(View.VISIBLE);
                             questionTxt.setVisibility(View.GONE);
                             Glide.with(QuizActivity.this)
